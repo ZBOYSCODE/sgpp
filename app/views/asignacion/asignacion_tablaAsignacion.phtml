@@ -1,0 +1,43 @@
+		<table id="tablaVistaGeneral" class="table table-vcenter table-striped">
+			<thead>
+				<tr>
+					<th></th>
+					<?php foreach($pcData['weeks'] as $mondayWeek){ ?>
+						<th class="text-center"><h5> <?php print($mondayWeek) ?><h5></th>
+					<?php }?>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($pcData['personas'] as $persona): ?>
+					<tr class="text-center">
+						<td class="col-personas"><?php print($persona['nombres'])?><br><?php print($persona['apellido_paterno']) ?></td>
+						<?php foreach ($pcData['weeks'] as $mondayWeek): ?>
+							<?php if (isset($pcData['data'][$mondayWeek][$persona['rut']])): ?>
+								<?php $data = $pcData['data'][$mondayWeek][$persona['rut']]; ?>
+								<td>
+									<a href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&proy_id=<?php print($data['proy_id']) ?>&pp_id=<?php print($data['prsn_proy_id']) ?>" class="widget widget-asignacion widget-hover-effect1">
+										<div class="widget-simple themed-background-<?php print($data['proy_color']) ?>">
+											<div class="widget-content widget-content-light">
+												<?php print($data['hh_porcentaje_asignadas']) ?>%	
+											</div>
+										</div>
+									</a>
+								</td>
+							<?php else: ?>
+								<td>
+									<a href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1" >
+										<div class="widget-simple themed-background-night ?>">
+											<div class="widget-content widget-content-light">
+												0%	
+											</div>
+										</div>
+									</a>
+								</td>
+							<?php endif ?>
+						<?php endforeach ?>				
+					</tr>
+				<?php endforeach ?>
+
+			</tbody>
+			
+		</table>

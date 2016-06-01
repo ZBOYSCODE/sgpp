@@ -1,0 +1,94 @@
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+	<div class="modal-content">
+		<div class="modal-header themed-background-default">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title"><strong>Edición Bloque</strong></h4>
+		</div>
+		<?php $vista = isset($pcData['bloquePP']['prsn_proy_id'])?'asignacion/editarBloque':'asignacion/guardarBloque' ?>
+		<form action="<?php print($this->url->get($vista)) ?>" method="post" enctype="multipart/form-data" class="form-horizontal" data-type="ajax">	      
+      	<div class="modal-body" style="min-height:25em;">
+      	 	<h3 class="text-center"><strong><?php print($pcData['fechaInicio']) ?> <small>hasta</small> <?php print($pcData['fechaFin']) ?></h3></strong>
+			<fieldset >
+				<h4>HH Disponible <?php print($pcData['persona']['nombres']." ".$pcData['persona']['apellido_paterno']) ?>: <strong><span id="porcentajeDisponible"><?php print(isset($pcData['bloquePM']['hh_porcentaje_disponibles'])?$pcData['bloquePM']['hh_porcentaje_disponibles']:100) ?></span>%</strong></h4>
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="proyecto">Proyecto</label>
+					<div class="col-md-8">
+					<select name="proyecto" id="proyecto" class="form-control select-chosen" data-placeholder="Seleccione Proyecto">
+						<?php if (isset($pcData['bloquePP']['prsn_proy_id'])){ ?>
+							<?php foreach ($pcData['proyectos'] as $proyecto){ ?>
+								<?php if ($proyecto['proy_id'] == $pcData['proyectoSelected']){ ?>
+									<option selected value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>
+								<?php }else{ ?>
+									<option value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>				
+								<?php } ?>
+							<?php } ?>
+						<?php }else{ ?>
+							<option value=""></option>
+							<?php foreach ($pcData['proyectos'] as $proyecto){ ?>
+								<option value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>
+							<?php }?>
+
+						<?php } ?>
+					</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="porcentaje_hh">Porcentaje de HH</label>
+					<div class="col-md-8">
+						<input id="porcentaje_hh" name="porcentaje_hh" type="number" class="form-control" value="<?php print(isset($pcData['bloquePP']['hh_porcentaje_asignadas'])?$pcData['bloquePP']['hh_porcentaje_asignadas']:0) ?>">
+					</div>
+				</div>
+			</fieldset>	
+
+			<?php if (isset($pcData['bloquePP']['prsn_proy_id'])){ ?>
+				<input type="hidden" name="prsn_proy_id" value="<?php print($pcData['bloquePP']['prsn_proy_id']) ?>">				
+			<?php }else{ ?>
+				<input type="hidden" name="rut" value="<?php print($pcData['persona']['rut']) ?>">			
+				<input type="hidden" name="fecha" value="<?php print($pcData['fechaInicio']) ?>">								
+			<?php }?>
+			<input type="hidden" id="porcentaje_maximo" value="<?php print(isset($pcData['bloquePM']['hh_porcentaje_disponibles'])?$pcData['bloquePM']['hh_porcentaje_disponibles']:100) ?>">	 	
+			<input type="hidden" id="porcentaje_asignado" value="<?php print(isset($pcData['bloquePP']['hh_porcentaje_asignadas'])?$pcData['bloquePP']['hh_porcentaje_asignadas']:0) ?>">	
+			<?php if (isset($pcData['bloquePM']['prsn_mes_id'])): ?>
+				<input type="hidden" name="pm_id" value="<?php print($pcData['bloquePM']['prsn_mes_id']) ?>">			
+			<?php endif ?>
+			
+
+      	 
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+  	function postCarga(){
+	  	$('#porcentaje_hh').change(function(event) {
+	  		var maximoPorcentaje = parseInt($("#porcentaje_maximo").val()) + parseInt($("#porcentaje_asignado").val());
+	  		console.log(maximoPorcentaje);
+	  		var nuevoDisponible = maximoPorcentaje-$(this).val();
+	  		console.log(nuevoDisponible);	  		
+	  		if(nuevoDisponible>=0 && nuevoDisponible <= maximoPorcentaje)
+	  			$('#porcentajeDisponible').html(nuevoDisponible);
+	  		else if(nuevoDisponible<0){
+	  			$.bootstrapGrowl('No hay horas suficientes.',{type:'warning',align:'center'});
+	  			$(this).val(maximoPorcentaje);
+	  			$('#porcentajeDisponible').html(0);
+	  		} else if(nuevoDisponible>maximoPorcentaje){
+	  			$.bootstrapGrowl('Se alcanzaron las horas mínimas',{type:'warning',align:'center'});
+	  			$('#porcentajeDisponible').html(maximoPorcentaje);
+	  			$(this).val(0);	  			
+	  		}
+	  	});
+  	}
+
+  	postCarga();
+  </script>
+

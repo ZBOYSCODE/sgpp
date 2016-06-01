@@ -1,0 +1,40 @@
+ <div class="">
+            <!-- Main Sidebar -->
+            <div id="sidebar" style="margin-top: 59px;">
+                <!-- Wrapper for scrolling functionality -->
+                <div id="sidebar-scroll">
+                    <!-- Sidebar Content -->
+                    <div class="sidebar-content">
+                        <!-- Brand -->
+						<a href="index.php" class="sidebar-brand" style="height:50px">
+							<i class="gi gi-skull"></i>
+							<span class="sidebar-nav-mini-hide"><strong>Evaluación</strong>2016</span>
+						</a>
+                        <!-- END Brand -->
+
+                        <!-- Sidebar Navigation -->
+                        <ul class="sidebar-nav">
+
+                          <li class="sidebar-header">
+                                    <span class="sidebar-header-options clearfix"><a href="javascript:void(0)" data-toggle="tooltip" title="Opciones para jefaturas"><i class="gi gi-user"></i></a></span>
+                                    <span class="sidebar-header-title">Menú</span>
+                            </li>                        
+                            <li>
+                                <a href="<?php print($this->url->get('evaluacion/listadoCompleto')) ?>" class="<?php print($sideBarSel=='estado'?'active':'') ?>"><i class="gi gi-log_book"></i><span class="sidebar-nav-mini-hide"> Listado Completo</span></a>
+                            </li>
+
+                            <li>
+                                <a href="<?php print($this->url->get('evaluacion/listadoPropio')) ?>" class="<?php print($sideBarSel=='estado'?'active':'') ?>"><i class="gi gi-log_book"></i><span class="sidebar-nav-mini-hide"> Listado Propio</span></a>
+                            </li>                            
+                        </ul>
+                        <!-- END Sidebar Navigation -->
+                    </div>
+                    <!-- END Sidebar Content -->
+                </div>
+                <!-- END Wrapper for scrolling functionality -->
+            </div>
+            <!-- END Main Sidebar -->
+</div>
+
+
+

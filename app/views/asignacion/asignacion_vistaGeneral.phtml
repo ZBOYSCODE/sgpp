@@ -1,0 +1,37 @@
+<style>
+	#tablaVistaGeneral>tbody>tr>td{
+		padding: 8px 0 8px 0;
+	}
+
+	.widget-asignacion{
+		margin: 0;
+	}
+
+	.widget-asignacion>.widget-simple>.widget-content{
+		margin:0;
+	}
+
+	.col-personas{
+		padding: 8px 12px 8px 12px !important;
+	}
+</style>
+
+<div class="widget">
+	<div class="widget-simple" style="padding-top: 3em;padding-bottom: 2em;">
+		<div class="row text-center">
+			<div class="col-lg-5">
+					<h2 style="margin:0px;font-size: 25px;">Vista General</h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div id="tablaData">
+		<?php print($this->view->render('asignacion/asignacion_tablaAsignacion',array('pcData'=>$pcData))) ?>
+	</div>
+</div>
+
+<div id="modal-asignar" class="modal fade" role="dialog">
+	
+</div>

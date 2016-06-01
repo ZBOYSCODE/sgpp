@@ -1,0 +1,17 @@
+
+
+<table>
+	<tr>
+		<th>Evaluador</th>
+		<th>Evaluado</th>
+		<th>Eval</th>
+	</tr>
+
+	<?php foreach ($list as $val) {?>
+	<tr>
+		<td><?php print($val->evaluador) ?></td>
+		<td><?php print($val->evaluado) ?></td>
+		<td><?php print($val->eval) ?>%</td>
+	</tr>	
+	<?php } ?>
+</table>

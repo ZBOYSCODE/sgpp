@@ -1,0 +1,172 @@
+<style>
+	.block-hora{
+		margin-bottom: -15px !important;
+		padding-bottom: 20px;
+		padding: 0;
+	}
+	.block-area{
+		margin-top:10px !important;
+	}
+</style>	            	
+
+<div class="widget">
+	<div class="widget-simple" style="padding-top: 3em;padding-bottom: 2em;">
+		<div class="row text-center">
+			<div class="col-lg-5">
+					<h2 style="margin:0px;font-size: 25px;">Asignación de Horas de Personas</h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row fwBody draggable-blocks">
+		<div class="col-sm-3 connectedSortable" data-col="0" data-proy="0" data-totales="<?php print($pcData['default']['hh_totales']) ?>" data-actuales="<?php print($pcData['default']['hh_actuales']) ?>" style="border: 1px solid #DBE1E8;" style="border: 1px solid #DBE1E8;">
+			<div class="widget-simple text-center">
+				<h3><strong>Disponibles</strong></h3>
+				<h4><span class="hh-actuales">630</span> HH</h4> 
+			</div>
+
+			<?php foreach($pcData['horasDefault'] as $key => $hora) {?>
+				<div class="block full" data-col="0" data-row="<?php print($key) ?>" data-horas="<?php print($hora['hh_asignadas']) ?>" data-prsn="<?php print($hora['rut']) ?>" data-area="<?php print($hora['area']) ?>">
+					<!-- Icon Search Title -->
+					<div class="block-title">
+						<h2><?php print($hora['nombre']) ?></h2>
+					</div>
+
+					<a href="javascript:void(0)" class="widget widget-hover-effect1 themed-background-lake block-hora" data-toggle="modal" data-target="#modalEdit">
+						<div class="widget-simple">
+							<div class="widget-content widget-content-light text-center">
+								<h1> <?php print($hora['hh_asignadas']) ?> HH</h1>
+							</div>
+						</div>
+					</a>
+					<a href="javascript:void(0)" class="widget widget-hover-effect2 themed-background-fire block-area" data-toggle="modal" data-target="#modalEdit">
+						<div class="widget-simple">
+							<div class="widget-content widget-content-light text-center">
+								<?php print($hora['nombre_area']) ?>
+							</div>
+						</div>
+					</a>
+				</div>
+			<?php } ?>
+			<div class="block full" data-col="0" data-row="0" data-idob="1">
+				<!-- Icon Search Title -->
+				<div class="block-title">
+					<h2>Jorge Silva</h2>
+				</div>
+
+				<a href="javascript:void(0)" class="widget widget-hover-effect2 themed-background-fire">
+					<div class="widget-simple">
+						<div class="widget-content widget-content-light text-center">
+							<h1> 20 HH</h1>
+						</div>
+					</div>
+				</a>
+			</div>	
+			<div class="block full" data-col="0" data-row="0" data-idob="1">
+				<!-- Icon Search Title -->
+				<div class="block-title">
+					<h2>Jorge Cociña</h2>
+				</div>
+
+				<a href="javascript:void(0)" class="widget widget-hover-effect2 themed-background-flatie">
+					<div class="widget-simple">
+						<div class="widget-content widget-content-light text-center">
+							<h1 > 30 HH</h1>
+						</div>
+					</div>
+				</a>
+			</div>	
+			<div class="block full" data-col="0" data-row="0" data-idob="1">
+				<!-- Icon Search Title -->
+				<div class="block-title">
+					<h2>Orlando San Martín</h2>
+				</div>
+
+				<a href="javascript:void(0)" class="widget widget-hover-effect2 themed-background-lake">
+					<div class="widget-simple">
+						<div class="widget-content widget-content-light text-center">
+							<h1 > 10 HH</h1>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="block full" data-col="0" data-row="0" data-idob="1">
+				<!-- Icon Search Title -->
+				<div class="block-title">
+					<h2>Orlando San Martín</h2>
+				</div>
+
+				<a href="javascript:void(0)" class="widget widget-hover-effect2 themed-background-lake">
+					<div class="widget-simple">
+						<div class="widget-content widget-content-light text-center">
+							<h1> 30 HH</h1>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="block full" data-col="0" data-row="0" data-idob="1">
+				<!-- Icon Search Title -->
+				<div class="block-title">
+					<h2>Sebastián Silva</h2>
+				</div>
+
+				<a href="javascript:void(0)" toggle="" class="widget widget-hover-effect2 themed-background-forest">
+					<div class="widget-simple">
+						<div class="widget-content widget-content-light text-center">
+							<h1> 10 HH</h1>
+						</div>
+					</div>
+				</a>
+			</div>																							
+		</div>
+		<?php foreach ($pcData['proyectos'] as $proyecto){ ?>
+		<div class="col-sm-3 connectedSortable" data-col="<?php print($proyecto['proy_id']) ?>" data-proy="<?php print($proyecto['proy_id']) ?>" data-totales="<?php print($proyecto['hh_totales']) ?>" data-actuales="<?php print($proyecto['hh_actuales']) ?>" style="border: 1px solid #DBE1E8;">
+			<div class="widget-simple text-center">
+				<h3><?php print($proyecto['proy_nombre']) ?></h3>
+				<h4><span class="hh-actuales"><?php print($proyecto['hh_actuales']) ?></span> HH</h4>
+			</div>
+		</div>
+		<?php } ?>
+	</div>		
+
+</div>
+
+
+
+<div id="modalEdit" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edición Horas</h4>
+      </div>
+      <div class="modal-body">
+      	<div class="widget text-center">
+      		<input type="hidden" id="hhDispTotales" value="120">
+      		<div class="widget-extra">
+      			<h2>Horas Disponibles <strong><span id="hhDispActuales">120</span> <span>HH</span></strong> </h2>	
+      		</div>
+	        <div class="widget-extra">
+	        	<h3>Horas Bloque</h3>
+	        	<h1><input id="horasBloque" class="form-control" style="max-width:5em; display:block; margin: 0 auto;" type="number" value="50"></h1>
+	        </div>
+	        
+      	</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+</script>

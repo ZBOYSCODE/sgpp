@@ -1,0 +1,35 @@
+
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <!-- logo -->
+      <a href="<?php print($this->url->get('')) ?>" class="navbar-brand navbar-brand-fix"><img alt="" src="<?php print($this->url->get("img/logo.png"))?>"/></a>    
+    </div>
+    <div class="collapse navbar-collapse animated fadeIn" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+       
+        <li class="dropdown active" >
+          <a href="#" style="min-height: 56px;" class="dropdown-toggle" data-toggle="dropdown"><i class="gi gi-user"></i><b> <?php print(utf8_encode($this->auth->getIdentity()['name']))?></b> <span class="caret"></span></a>
+            <ul id="login-dp" class="dropdown-menu">
+                <li>
+                     <div class="row">
+                            <div class="col-md-12">
+								  <div class="form-group">
+									   <a href="<?php print($this->url->get('logout')) ?>" class="btn btn-imannova btn-block"><i class="gi gi-log_out"></i> Salir</a>
+								  </div>
+                            </div>                      
+                     </div>
+                </li>
+            </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
