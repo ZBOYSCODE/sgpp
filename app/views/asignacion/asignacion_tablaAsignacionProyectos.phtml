@@ -1,4 +1,5 @@
-		<table id="tablaVistaGeneral" class="table table-vcenter table-striped">
+<?php if (!empty($pcData['personas'])): ?>		
+		<table id="tablaVistaProyectos" class="table table-vcenter table-striped">
 			<thead>
 				<tr>
 					<th></th>
@@ -17,25 +18,21 @@
 								<?php $data = reset($dataCompleta); ?>
 
 								<td>
-									<a 	href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" 
-										data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" 
-										data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&ps_id=<?php print($data['prsn_smna_id']) ?>" 
+									<a 	href="<?php print($this->url->get('asignacion/modalAsignacionProyecto')) ?>" 
+										data-action="<?php print($this->url->get('asignacion/modalAsignacionProyecto')) ?>" 
+										data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&proy_id=<?php print($pcData['proyectoSelected']['proy_id']) ?>&ps_id=<?php print($data['prsn_smna_id']) ?>&pps_id=<?php print($data['proy_ps_id']) ?>" 
 										class="widget widget-asignacion widget-hover-effect1"
-										data-toggle="tooltip"
-										data-original-title="
-											<?php foreach ($dataCompleta as $proy) {
-												print($proy['proy_nombre'].':'.$proy['hh_porcentaje_asignadas'].'%&#10');			
-											} ?>">
+										>
 										<div class="widget-simple themed-background-<?php print($data['proy_color']) ?>">
 											<div class="widget-content widget-content-light">
-												<?php print($data['hh_total_porcentaje_asignadas']) ?>%	
+												<?php print($data['hh_porcentaje_asignadas']) ?>%	
 											</div>
 										</div>
 									</a>
 								</td>
 							<?php else: ?>
 								<td>
-									<a href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1" >
+									<a href="<?php print($this->url->get('asignacion/modalAsignacionProyecto')) ?>" data-action="<?php print($this->url->get('asignacion/modalAsignacionProyecto')) ?>" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&proy_id=<?php print($pcData['proyectoSelected']['proy_id']) ?>" class="widget widget-asignacion widget-hover-effect1" >
 										<div class="widget-simple themed-background-night ?>">
 											<div class="widget-content widget-content-light">
 												0%	
@@ -51,3 +48,7 @@
 			</tbody>
 			
 		</table>
+
+<?php else: ?>
+	<h2 class="text-center">Sin asignaciones</h2>
+<?php endif ?>		

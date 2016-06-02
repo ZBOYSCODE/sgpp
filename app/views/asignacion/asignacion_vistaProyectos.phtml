@@ -1,0 +1,49 @@
+<style>
+	#tablaVistaProyectos>tbody>tr>td{
+		padding: 8px 0 8px 0;
+	}
+
+	.widget-asignacion{
+		margin: 0;
+	}
+
+	.widget-asignacion>.widget-simple>.widget-content{
+		margin:0;
+	}
+
+	.col-personas{
+		padding: 8px 12px 8px 12px !important;
+	}
+</style>
+
+<div class="widget">
+	<div class="widget-simple" style="padding-top: 3em;padding-bottom: 2em;">
+		<div class="row text-center">
+			<div class="col-lg-5">
+					<h2 style="margin:0px;font-size: 25px;">Vista Proyectos</h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<form action="<?php print $this->url->get('asignacion/changeProyecto') ?>" class="form-horizontal" method="post" data-type="ajax">
+		<select name="proyectoSelected" id="proyectoSelected" class="select-chosen form-control col-xs-6" data-submit="true">
+			<?php foreach ($pcData['proyectos'] as $proyecto): ?>
+				<?php if ($proyecto['proy_id'] == $pcData['proyecto']['proy_id']): ?>
+					<option selected value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
+				<?php else: ?>
+					<option value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
+				<?php endif ?>
+				
+			<?php endforeach ?>
+		</select>
+	</form>
+	<div id="tablaData">
+		<?php print($this->view->render('asignacion/asignacion_tablaAsignacionProyectos',array('pcData'=>$pcData))) ?>
+	</div>
+</div>
+
+<div id="modal-asignar" class="modal fade" role="dialog">
+	
+</div>

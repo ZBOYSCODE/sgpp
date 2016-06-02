@@ -7,43 +7,12 @@ use Phalcon\Mvc\Model\Query;
 
 class Personas extends Model
 {
-
-    /**
-     *
-     * @var string
-     */
     public $rut;
-
-    /**
-     *
-     * @var string
-     */
     public $apellido_paterno;
-
-    /**
-     *
-     * @var string
-     */
     public $correo;
-
-    /**
-     *
-     * @var string
-     */
     public $apellido_materno;
-
-    /**
-     *
-     * @var string
-     */
     public $nombres;
-
-    /**
-     *
-     * @var string
-     */
     public $area;
-
     public $hh_mensuales;
     public $hh_disponibles;
     public $hh_porcentaje_disponibles;
@@ -69,33 +38,17 @@ class Personas extends Model
         return $query->execute();        
     }
 
-    public function getListadoEvaluados()
+    public function getPersonasByProyecto($data)
     {
-        $query = new Query("SELECT p1.correo evaluador, p2.correo evaluado, count(p2.correo)*100/9 eval, re.rut_evaluador
-                            FROM Gabs\Models\ResumenEvaluacionTipo re
-                            ,    Gabs\Models\Personas p1
-                            ,    Gabs\Models\Personas p2
-                            WHERE re.rut_evaluador = p1.rut
-                            AND   re.rut_evaluado  = p2.rut
-                            GROUP BY re.rut_evaluador, re.rut_evaluado",$this->getDI());
-        return $query->execute();
+        $query = new Query("SELECT p.rut, nombres, apellido_paterno 
+                            FROM Gabs\Models\ProyectoPersonaSemana pps 
+                            LEFT JOIN Gabs\Models\PersonaSemana ps ON ps.prsn_smna_id = pps.prsn_smna_id 
+                            LEFT JOIN Gabs\Models\Personas p ON p.rut = ps.rut 
+                            WHERE pps.proy_id = {$data['proy_id']} 
+                            GROUP BY p.rut",$this->getDI());
+        return $query->execute()->toArray();
     }
 
-    public function getListadoConsejoPorEvaluador($rut_evaluador)
-    {
-        $query = new Query("SELECT p1.correo evaluador, p2.correo evaluado, re.id_tipo, re.puntaje, tp.nombre_tipo, re.rut_evaluado, re.rut_evaluador
-                            FROM   Gabs\Models\ResumenEvaluacionTipo re
-                            ,      Gabs\Models\Personas p1
-                            ,      Gabs\Models\Personas p2
-							,      Gabs\Models\TipoPregunta tp
-                            WHERE  re.rut_evaluador = p1.rut
-                            AND    tp.id_tipo = re.id_tipo
-                            AND    re.rut_evaluado  = p2.rut
-                            AND    re.rut_evaluador ='".$rut_evaluador."'
-							ORDER BY p2.correo, re.id_tipo",$this->getDI());
-        return $query->execute();
-    }
-	
 	
 	
 	

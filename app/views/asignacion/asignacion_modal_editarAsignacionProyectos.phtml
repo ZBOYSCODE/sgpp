@@ -1,0 +1,74 @@
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+	<div class="modal-content">
+		<div class="modal-header themed-background-default">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title"><strong>Edición Bloque</strong></h4>
+		</div>
+		<?php $vista = isset($pcData['bloquePPS'])?'asignacion/editarBloqueProyecto':'asignacion/guardarBloqueProyecto' ?>
+		<form action="<?php print($this->url->get($vista)) ?>" method="post" enctype="multipart/form-data" class="form-horizontal" data-type="ajax">	      
+      	<div class="modal-body" style="min-height:15em;">
+      	 	<h3 class="text-center"><strong><?php print($pcData['fechaInicio']) ?> <small>hasta</small> <?php print($pcData['fechaFin']) ?></h3></strong>
+			<fieldset >
+				<h4>HH Disponible <?php print($pcData['persona']['nombres']." ".$pcData['persona']['apellido_paterno']) ?>: <strong><span id="porcentajeDisponible"><?php print(isset($pcData['bloquePS']['hh_total_porcentaje_asignadas'])?100-$pcData['bloquePS']['hh_total_porcentaje_asignadas']:100) ?></span>%</strong></h4>
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="porcentaje_hh">Porcentaje de HH</label>
+					<div class="col-md-8">
+						<input id="porcentaje_hh" name="porcentaje_hh" type="number" class="form-control" value="<?php print(isset($pcData['bloquePPS']['hh_porcentaje_asignadas'])?$pcData['bloquePPS']['hh_porcentaje_asignadas']:0) ?>">
+					</div>
+				</div>
+			</fieldset>	
+
+			<?php if (isset($pcData['bloquePPS'])){ ?>
+				<input type="hidden" name="pps_id" value="<?php print($pcData['bloquePPS']['proy_ps_id']) ?>">				
+			<?php }else{ ?>
+				<input type="hidden" name="rut" value="<?php print($pcData['persona']['rut']) ?>">			
+				<input type="hidden" name="fecha" value="<?php print($pcData['fechaInicio']) ?>">								
+			<?php }?>
+			<input type="hidden" id="porcentaje_maximo" value="<?php print(isset($pcData['bloquePS']['hh_total_porcentaje_asignadas'])?100-$pcData['bloquePS']['hh_total_porcentaje_asignadas']:100) ?>">	 	
+			<input type="hidden" id="porcentaje_asignado" value="<?php print(isset($pcData['bloquePPS']['hh_porcentaje_asignadas'])?$pcData['bloquePPS']['hh_porcentaje_asignadas']:0) ?>">	
+
+			<!--- REVISAR -->
+			<?php if (isset($pcData['bloquePS'])): ?>
+				<input type="hidden" name="ps_id" value="<?php print($pcData['bloquePS']['prsn_smna_id']) ?>">			
+			<?php endif ?>
+			
+
+      	 
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+  	function postCarga(){
+	  	$('#porcentaje_hh').change(function(event) {
+	  		var maximoPorcentaje = parseInt($("#porcentaje_maximo").val()) + parseInt($("#porcentaje_asignado").val());
+	  		console.log(maximoPorcentaje);
+	  		var nuevoDisponible = maximoPorcentaje-$(this).val();
+	  		console.log(nuevoDisponible);	  		
+	  		if(nuevoDisponible>=0 && nuevoDisponible <= maximoPorcentaje)
+	  			$('#porcentajeDisponible').html(nuevoDisponible);
+	  		else if(nuevoDisponible<0){
+	  			$.bootstrapGrowl('No hay horas suficientes.',{type:'warning',align:'center'});
+	  			$(this).val(maximoPorcentaje);
+	  			$('#porcentajeDisponible').html(0);
+	  		} else if(nuevoDisponible>maximoPorcentaje){
+	  			$.bootstrapGrowl('Se alcanzaron las horas mínimas',{type:'warning',align:'center'});
+	  			$('#porcentajeDisponible').html(maximoPorcentaje);
+	  			$(this).val(0);	  			
+	  		}
+	  	});
+  	}
+
+  	postCarga();
+  </script>
+
