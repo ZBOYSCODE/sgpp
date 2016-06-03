@@ -17,8 +17,8 @@
 								<?php $data = reset($dataCompleta); ?>
 
 								<td>
-									<a 	href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" 
-										data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" 
+									<a 	href="javascript:void(0)" 
+									 
 										data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&ps_id=<?php print($data['prsn_smna_id']) ?>" 
 										class="widget widget-asignacion widget-hover-effect1"
 										data-toggle="tooltip"
@@ -35,7 +35,7 @@
 								</td>
 							<?php else: ?>
 								<td>
-									<a href="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-action="<?php print($this->url->get('asignacion/editarAsignacion')) ?>" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1" >
+									<a href="javascript:void(0)" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1" >
 										<div class="widget-simple themed-background-night ?>">
 											<div class="widget-content widget-content-light">
 												0%	

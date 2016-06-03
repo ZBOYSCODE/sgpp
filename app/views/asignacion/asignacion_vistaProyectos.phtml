@@ -27,17 +27,23 @@
 </div>
 
 <div class="container">
+	
 	<form action="<?php print $this->url->get('asignacion/changeProyecto') ?>" class="form-horizontal" method="post" data-type="ajax">
-		<select name="proyectoSelected" id="proyectoSelected" class="select-chosen form-control col-xs-6" data-submit="true">
-			<?php foreach ($pcData['proyectos'] as $proyecto): ?>
-				<?php if ($proyecto['proy_id'] == $pcData['proyecto']['proy_id']): ?>
-					<option selected value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
-				<?php else: ?>
-					<option value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
-				<?php endif ?>
-				
-			<?php endforeach ?>
-		</select>
+		<div class="row">
+			<div class="col-xs-4">
+				<select name="proyectoSelected" id="proyectoSelected" class="select-chosen form-control" data-submit="true">
+					<?php foreach ($pcData['proyectos'] as $proyecto): ?>
+						<?php if ($proyecto['proy_id'] == $pcData['proyecto']['proy_id']): ?>
+							<option selected value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
+						<?php else: ?>
+							<option value="<?php print($proyecto['proy_id']) ?>"><?php print($proyecto['proy_nombre']) ?></option>	
+						<?php endif ?>
+						
+					<?php endforeach ?>
+				</select>
+			</div>
+
+		</div>
 	</form>
 	<div id="tablaData">
 		<?php print($this->view->render('asignacion/asignacion_tablaAsignacionProyectos',array('pcData'=>$pcData))) ?>

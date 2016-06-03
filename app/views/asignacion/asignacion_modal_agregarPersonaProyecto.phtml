@@ -1,0 +1,34 @@
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+	<div class="modal-content">
+		<div class="modal-header themed-background-default">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title"><strong>Agregar Persona</strong></h4>
+		</div>
+		<form action="<?php print($this->url->get('asignacion/agregarPersona')) ?>" method="post" enctype="multipart/form-data" class="form-horizontal" data-type="ajax">	      
+      	<div class="modal-body" style="min-height:20em;">
+			<fieldset >
+				<h4>Seleccione persona a agregar a proyecto.</h4>
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="porcentaje_hh">Personas Disponibles</label>
+					<div class="col-md-8">
+						<select name="personaSelected" id="personaSelected" class="form-control select-chosen">
+							<?php foreach ($pcData['personas'] as $persona): ?>
+								<option value="<?php print($persona['rut']) ?>"><?php print($persona['nombres']." ".$persona['apellido_paterno']." ".$persona['apellido_materno'][0].".") ?></option>
+							<?php endforeach ?>
+						</select>
+					</div>
+				</div>
+			</fieldset>	
+
+			<input type="hidden" name="proy_id" value="<?php print($pcData['proyectoSelected']['proy_id']) ?>">
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
+      </div>
+      </form>
+    </div>
+
+  </div>

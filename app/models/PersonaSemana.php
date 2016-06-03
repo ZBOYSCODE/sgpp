@@ -47,4 +47,18 @@ class PersonaSemana extends Model
         } else
             return $query;
     }
+
+    public function getPersonaSemanaByFechaRut($data){
+        $query = new Query("
+            SELECT prsn_smna_id, rut, hh_total_porcentaje_asignadas
+            FROM Gabs\Models\PersonaSemana ps 
+            WHERE rut = '{$data['rut']}'
+            AND fecha_inicio_semana = '{$data['fecha']}'", $this->getDI());
+        $query = $query->execute();  
+        if (count($query)>0) 
+            return $query->toArray()[0];
+        else
+            return array();
+
+    }
 }

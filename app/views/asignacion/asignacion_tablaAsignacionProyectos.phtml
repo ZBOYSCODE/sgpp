@@ -1,3 +1,13 @@
+<div class="row">
+	<div class="col-xs-2 pull-right">
+		<a href="<?php print $this->url->get("asignacion/modalAgregarPersona") ?>" 
+		data-action="<?php print $this->url->get("asignacion/modalAgregarPersona") ?>"
+		data-val="proy_id=<?php print($pcData['proyectoSelected']['proy_id']) ?>"
+		class="btn btn-info">Agregar Persona</a>
+	</div>		
+</div>			
+
+
 <?php if (!empty($pcData['personas'])): ?>		
 		<table id="tablaVistaProyectos" class="table table-vcenter table-striped">
 			<thead>
@@ -52,3 +62,7 @@
 <?php else: ?>
 	<h2 class="text-center">Sin asignaciones</h2>
 <?php endif ?>		
+
+<div id="modal-agregar-persona" class="modal fade" role="dialog">
+	
+</div>

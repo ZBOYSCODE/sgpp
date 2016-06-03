@@ -28,9 +28,9 @@
 			<?php }?>
 			<input type="hidden" id="porcentaje_maximo" value="<?php print(isset($pcData['bloquePS']['hh_total_porcentaje_asignadas'])?100-$pcData['bloquePS']['hh_total_porcentaje_asignadas']:100) ?>">	 	
 			<input type="hidden" id="porcentaje_asignado" value="<?php print(isset($pcData['bloquePPS']['hh_porcentaje_asignadas'])?$pcData['bloquePPS']['hh_porcentaje_asignadas']:0) ?>">	
+			<input type="hidden" name="proy_id" value="<?php print($pcData['proyectoSelected']) ?>">
 
-			<!--- REVISAR -->
-			<?php if (isset($pcData['bloquePS'])): ?>
+			<?php if (isset($pcData['bloquePS']) and !empty($pcData['bloquePS'])): ?>
 				<input type="hidden" name="ps_id" value="<?php print($pcData['bloquePS']['prsn_smna_id']) ?>">			
 			<?php endif ?>
 			
