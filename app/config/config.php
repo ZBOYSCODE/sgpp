@@ -34,6 +34,9 @@ return new \Phalcon\Config([
         'AWSAccessKeyId' => '',
         'AWSSecretKey' => ''
     ],
+    'actividades' => [
+        'horas' => "02:00"
+    ],
     'noAuth' => //noAuth -> configuracion de controller y acciones que no tienen que pasar por la autentificacion
     array('session'=>array('login'=>true,'logout'=>true)),
     'appTitle'=>'Sistema Gestión Personal y Proyectos',

@@ -24,8 +24,9 @@
 	    	$addJs[] 	= "js/registro.js";
 	    	$addCss[]	= "css/style_registros.css";
 
-	    	$pcData['proyectos'] = Proyecto::find();
-	    	$pcData['fecha'] 	= date('Y-m-d');
+	    	$pcData['proyectos'] 	= Proyecto::find();
+	    	$pcData['fecha'] 		= date('Y-m-d');
+
 
 	        echo $this->view->render('theme',array(	'topMenu'=>$menu,
 	        										'menuSel'=>'', 
@@ -189,12 +190,23 @@
 	    	$fecha 		=	$this->request->getPost("fecha");
 	    	$usuario 	=	$this->auth->getIdentity()['id'];
 
-	    	$bloques = Bloque::find(
-	    		array(
-	    			"proyecto_id = ".$proyecto,
-	    			"usuario_id  = ".$usuario
-	    		)
-	    	);
+	    	// Query robots binding parameters with both string and integer placeholders
+			$conditions = "proyecto_id = :proyecto: 
+						   AND usuario_id = :usuario:
+						   AND fecha = :fecha:";
+
+			// Parameters whose keys are the same as placeholders
+	    	$params = array(
+		    			"proyecto" 	=> $proyecto,
+		    			"usuario"  	=> $usuario,
+		    			"fecha" 	=> $fecha
+		    		);
+
+	    	$bloques = Bloque::find(array(
+	    			$conditions,
+	    			"bind" => $params
+	    	));
+
 
 	    	$i =0 ;
 	    	foreach ($bloques as $bloque)
@@ -205,6 +217,9 @@
                 $data['bloques'][$i]['fecha'] 		= $bloque->fecha;
                 $data['bloques'][$i]['orden'] 		= $bloque->orden;
 
+                $cntHrsR = 0;
+                $cntHrsE = 0;
+
                 $j = 0;
                 foreach ($bloque->actividad as $actividad) {
                 	$data['bloques'][$i]['actividades'][$j]['id'] 			= $actividad->id;
@@ -212,8 +227,15 @@
                     $data['bloques'][$i]['actividades'][$j]['hh_reales'] 	= $this->floatToTime($actividad->hh_reales);
                     $data['bloques'][$i]['actividades'][$j]['descripcion'] 	= $actividad->descripcion;
 
+                    $cntHrsE+=$actividad->hh_estimadas;
+                    $cntHrsR+=$actividad->hh_reales;
+
                     $j++;
                 }
+
+                $data['bloques'][$i]['cntHrsR'] = $this->floatToTime($cntHrsR);
+                $data['bloques'][$i]['cntHrsE'] = $this->floatToTime($cntHrsE);
+
                 $i++;
             }
 
@@ -227,6 +249,29 @@
             }
             
 	    	echo json_encode($data, JSON_PRETTY_PRINT);
+	    }
+
+	    public function diferenciaHoraBloqueAction()
+	    {
+	    	$horas 		= 	$this->request->getPost("horas", "string");
+	    	$hrsBloque	=	$this->config->actividades->horas;
+
+	    	$val1 = '2001-01-01 '.$horas.":00";
+			$val2 = '2001-01-01 '.$hrsBloque.":00";
+
+			$datetime1 = new \DateTime($val1);
+			$datetime2 = new \DateTime($val2);
+
+
+			if($datetime1 > $datetime2){
+				$data['estado'] = false;
+				$data['msg'] = "El total de las horas es mayor a la configurada por bloque";
+			}
+			else
+			 	$data['estado']	= true;
+
+			 echo json_encode($data, JSON_PRETTY_PRINT);
+
 	    }
 
 	    private function deleteActividadByBloque($bloque)

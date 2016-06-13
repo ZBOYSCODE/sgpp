@@ -6,19 +6,18 @@ $(document).ready(function(){
 	var url 		= $("#frm").attr('action');
 
 	$(document).on('change', '#proyectos', function(){
+		quitar_alerta();
+		carga_registros();
+	});
 
-		$("#bloques").html("");
-
-		proyecto 	= $("#proyectos").val();
-		fecha		= $("#fecha").val();
-
-		if(proyecto == 0){return false;}
-		if(fecha == ''){return false;}
-
+	$(document).on('change', '#fecha', function(){
+		quitar_alerta();
 		carga_registros();
 	});
 
 	$(document).on('click', '.add-block', function(){
+
+		quitar_alerta();
 
 		// verificamos si el proyecto está seleccionado
 		if(proyecto == 0){
@@ -52,7 +51,10 @@ $(document).ready(function(){
 		    id: 'tit-'+idbloque,
 		    class: 'row col-md-12',
 		    'data-num': numb,
-		    html: 	"<div class='col-xs-9'><p class='num_bloque'>bloque #"+numb+"</p></div>"+
+		    html: 	"<div class='col-xs-9'>"+
+		    			"<p class='num_bloque' id='hrs-"+idbloque+"'>Horas estimadas : <span class='hrsE'>00:00</span> hrs."+
+		    			"<br>Horas reales : <span class='hrsR'>00:00</span> hrs.</p>"+
+		    		"</div>"+
 		    		"<div class='col-xs-3'>"+
 		    		"<button class='btn btn-danger pull-right delete-bloque' data-bloque='"+idbloque+"'>"+
 		    		"<i class='fa fa-trash-o' title='Eliminar bloque'></i></button>"+
@@ -64,11 +66,13 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '.delete-bloque', function(){
+		quitar_alerta();
 		var bloque = $(this).attr('data-bloque');
 		eliminar_bloque(bloque);
 	});
 
 	$(document).on('click', '.delete-act', function(){
+		quitar_alerta();
 		var actividad = $(this).attr('data-id');
 
 
@@ -84,7 +88,45 @@ $(document).ready(function(){
 		
 	});
 
+	$(document).on('change', '.inhhe', function(){// input ingreso horas estimadas
+
+		var hrs = $(this).val();
+		var bloque = $(this).attr('id');
+
+		bloque = bloque.split("_");
+		bloque = bloque[2];
+
+		var $span = $("#hrs-"+bloque+" .hrsE");
+		var horas_bloque = $span.text();
+
+		var totalHoras = sumar_horas_estimadas(bloque);
+
+		if(horamayor(totalHoras)){
+			alerta("¡El total de horas es mayor al configurado por bloque!", 'alert-warning');
+		}
+		
+		$span.text(totalHoras);
+	});
+
+	$(document).on('change', '.inhhr', function(){// input ingreso horas estimadas
+
+		var hrs = $(this).val();
+		var bloque = $(this).attr('id');
+
+		bloque = bloque.split("_");
+		bloque = bloque[2];
+
+		var $span = $("#hrs-"+bloque+" .hrsR");
+		var horas_bloque = $span.text();
+
+		var totalHoras = sumar_horas_reales(bloque);
+		
+		$span.text(totalHoras);
+	});
+
 	$(document).on('click', '.add-actividad', function(){
+
+		quitar_alerta();
 
 		idbloque = $(this).attr('data-bloque');
 	
@@ -95,8 +137,8 @@ $(document).ready(function(){
 		    //'data-num': idbloque,
 		    html: "<div class='form-horizontal'>"+
 		    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' placeholder='Actividad' /></div> "+
-		    			"<div class='form-group col-md-2 inputHE'><input class='form-control input-actividad' id='input_hh_"+idbloque+"' type='time' value='00:00' /></div> "+
-		    			"<div class='form-group col-md-2 inputHR'><input class='form-control input-actividad' id='input_hhreal_"+idbloque+"' type='time' value='00:00' /></div> "+
+		    			"<div class='form-group col-md-2 inputHE'><input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' type='time' value='00:00' /></div> "+
+		    			"<div class='form-group col-md-2 inputHR'><input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' type='time' value='00:00' /></div> "+
 		    			"<div class='form-group col-md-2'>"+
 		    				"<a class='btn btn-default guardar-act' href='#' role='button' data-bloque='"+idbloque+"'>"+
 		    				"<i class='hi hi-floppy_disk' title='Añadir actividad'></i></a>"+
@@ -111,6 +153,8 @@ $(document).ready(function(){
 
 
 	$(document).on('click', '.guardar-act', function(){
+
+		quitar_alerta();
 
 		var $btn = $(this);
 
@@ -165,8 +209,10 @@ $(document).ready(function(){
 
 				$btn.children().removeClass("hi hi-floppy_disk");
 				$btn.children().addClass("fa fa-refresh");
+
+				alerta('¡Actividad guardada con exito!', 'alert-success');
 			}else{
-				alerta(data.msg);
+				alerta(data.msg, 'alert-danger');
 			}
 		});
 
@@ -241,6 +287,16 @@ $(document).ready(function(){
 
 	function carga_registros()
 	{
+
+		$("#bloques").html("");
+
+		proyecto 	= $("#proyectos").val();
+		fecha		= $("#fecha").val();
+
+		if(proyecto == 0){return false;}
+		if(fecha == ''){return false;}
+
+
 		//se cargaran los bloques y actividades creadas, y se seteara el numero de bloques
 
 		var datos = {
@@ -293,7 +349,10 @@ $(document).ready(function(){
 			    id: 'tit-'+idbloque,
 			    class: 'row col-md-12',
 			    'data-num': numbloques,
-			    html: 	"<div class='col-xs-9'><p class='num_bloque'>bloque #"+numbloques+"</p></div>"+
+			    html: 	"<div class='col-xs-9'>"+
+			    			"<p class='num_bloque' id='hrs-"+idbloque+"'>Horas estimadas : <span class='hrsE'>"+b.cntHrsE+"</span> hrs."+
+			    			"<br>Horas reales : <span class='hrsR'>"+b.cntHrsR+"</span> hrs.</p>"+
+			    		"</div>"+
 			    		"<div class='col-xs-3'>"+
 			    		"<button class='btn btn-danger pull-right delete-bloque' data-bloque='"+idbloque+"'>"+
 			    		"<i class='fa fa-trash-o' title='Eliminar bloque'></i></button>"+
@@ -312,8 +371,8 @@ $(document).ready(function(){
 					    //'data-num': idbloque,
 					    html: "<div class='form-horizontal'>"+
 					    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' 		type='text'	value='"+act.descripcion+"' placeholder='Actividad' /></div> "+
-					    			"<div class='form-group col-md-2 inputHE'> <input class='form-control input-actividad' id='input_hh_"+idbloque+"' 		type='time' value='"+act.hh_estimadas+"' /></div> "+
-					    			"<div class='form-group col-md-2 inputHR'> <input class='form-control input-actividad' id='input_hhreal_"+idbloque+"' 	type='time' value='"+act.hh_reales+"' /></div> "+
+					    			"<div class='form-group col-md-2 inputHE'> <input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' 		type='time' value='"+act.hh_estimadas+"' /></div> "+
+					    			"<div class='form-group col-md-2 inputHR'> <input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' 	type='time' value='"+act.hh_reales+"' /></div> "+
 					    			"<div class='form-group col-md-2 '>"+
 					    				"<a class='btn btn-default guardar-act' href='#' role='button' data-id='"+act.id+"'>"+
 					    				"<i class='fa fa-refresh' title='Actualizar actividad'></i></a>"+
@@ -331,11 +390,70 @@ $(document).ready(function(){
 		});
 	}
 
-	function updateNumBloques()
+	function horamayor(hrs)
 	{
+		var datos = {
+			'horas' : hrs
+		}
 
+		dif = ajax(datos, 'diferenciaHoraBloque');
+		dif.success(function (data)
+		{
+			if(!data.estado)
+			{
+				alerta(data.msg, 'alert-warning');
+			}
+		});
 	}
 
+	function sumar_horas_estimadas(bloque)
+	{
+		var $ele = $("#tit-"+bloque).children(".actividad");
+		var total = '00:00';
+
+		$.each($ele, function(a,actividad){
+			var hra = $(actividad).children().children('.inputHE').children().val();
+			total = difhrs(total, hra);
+		});
+
+		return total;
+	}
+
+	function sumar_horas_reales(bloque)
+	{
+		var $ele = $("#tit-"+bloque).children(".actividad");
+		var total = '00:00';
+
+		$.each($ele, function(a,actividad){
+			var hra = $(actividad).children().children('.inputHR').children().val();
+			total = difhrs(total, hra);
+		});
+
+		return total;
+	}
+
+	function difhrs(hr1, hr2){
+
+		horas1 = hr1.split(":");
+		horas2 = hr2.split(":");
+
+		horatotale=new Array();
+
+		
+		for(a=0;a<2;a++)
+		{
+		  horas1[a]=(isNaN(parseInt(horas1[a])))?0:parseInt(horas1[a])
+		  horas2[a]=(isNaN(parseInt(horas2[a])))?0:parseInt(horas2[a])
+
+		  horatotale[a]=(horas1[a]+horas2[a]);
+		}
+
+		horatotal=new Date()
+		horatotal.setHours(horatotale[0]);
+		horatotal.setMinutes(horatotale[1]);
+
+		return  horatotal.getHours()+":"+horatotal.getMinutes();
+	}
 
 	function ajax(datos, metodo, async = true)
 	{
@@ -355,6 +473,8 @@ $(document).ready(function(){
 
 	function alerta(msg, tipo_alerta){
 
+		quitar_alerta();
+
 		jQuery('<div/>', {
 		    class 	: 'alert '+tipo_alerta,
 		    role 	: 'alert',
@@ -362,6 +482,13 @@ $(document).ready(function(){
 		    			"<strong>Atención :</strong> "+msg
 		}).appendTo('#message_error');
 
+	}
+
+	function quitar_alerta()
+	{
+		$("#message_error").children().addClass('danger').hide('fast', function(){
+			$(this).remove();
+		});
 	}
 
 	function log(msg){
