@@ -1,0 +1,26 @@
+#bloques {
+	margin-top: 1em;
+}
+
+#bloques .bloque{
+	background-color: rgba(200,200,200,0.3);
+	border: 1px solid rgba(200,200,200,0.6);
+
+	margin-top: 5px;
+	padding-bottom: 2em;
+}
+
+#bloques .bloque .add-actividad{
+	margin: 5px;
+}
+#bloques .bloque .delete-bloque{
+	margin: 5px;
+}
+
+
+
+#bloques .bloque .num_bloque{
+	font-family: verdana;
+	font-size: 1em;
+	font-weight: bold;
+}

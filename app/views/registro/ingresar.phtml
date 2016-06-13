@@ -1,0 +1,43 @@
+<div class='container'>
+
+	<hr>
+	
+	
+
+	<div class="col-md-6 col-md-offset-3">
+
+		<form class='form-inline' action="<?php print $this->url->get('registro')?>" id='frm'>
+
+			<div class="form-group">
+				<label for="proyectos">Proyectos</label>
+				<select name="proyectos" id="proyectos" class='form-control input-lg'>
+					<option value="0">Seleccione</option>
+					<?php
+						foreach ($pcData['proyectos'] as $proyecto){ ?>
+							<option value="<?php echo $proyecto->proy_id; ?>"><?php echo $proyecto->proy_nombre; ?></option>
+						<?php } ?>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="fecha">Fecha</label>
+				<input type="date" name='fecha' id='fecha' class='form-control input-lg' value="<?php echo $pcData['fecha']; ?>">
+			</div>
+			
+			<div class="form-group">
+				<button type='button' class='btn btn-success add-block input-lg'><i class="hi hi-plus"></i> Añadir bloque</button>
+			</div>
+		</form>
+	
+		<hr>
+		<div id='message_error' class='col-md-12'></div>
+		
+
+	</div>
+
+	<div class="col-md-10 col-md-offset-1">
+		<input type='hidden' id="num_bloques" value='0' />
+		<div class="bloques" id='bloques'></div>
+	</div>
+
+</div>

@@ -44,4 +44,10 @@ $router->add('/grupos/configurar', array(
     'action' => 'gruposConfigurar'
     ));
 
+
+$router->add('registro/ingresar', array(
+    'controller'    =>  'registro',
+    'action'        =>  'ingresar'
+));
+
 return $router;
