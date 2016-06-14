@@ -27,5 +27,7 @@
 	                'action' => Relation::ACTION_CASCADE,
 	                'message' => 'Organization cannot be deleted because it has sites'
 	            ]));
+
+	       	$this->belongsTo("usuario_id", __NAMESPACE__ . "\Users", "id", array('alias' => 'usuario'));
 	    }
 	}

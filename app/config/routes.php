@@ -50,4 +50,9 @@ $router->add('registro/ingresar', array(
     'action'        =>  'ingresar'
 ));
 
+$router->add('actividad/listar', array(
+    'controller'    =>  'actividad',
+    'action'        =>  'listar'
+));
+
 return $router;
