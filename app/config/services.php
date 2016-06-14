@@ -72,6 +72,7 @@ $di->set('db', function () use ($config) {
         'username' => $config->database->username,
         'password' => $config->database->password,
         'dbname' => $config->database->dbname,
+	'charset' => $config->database->charset,
         'options' => array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
         )        
