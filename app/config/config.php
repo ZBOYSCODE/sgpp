@@ -4,8 +4,8 @@ return new \Phalcon\Config([
         'adapter' => 'Mysql',
         'host' => 'localhost',
         'username' => 'root',
-        'password' => '',
-        'dbname' => 'sgpp'
+        'password' => 'z3nta',
+        'dbname' => 'zentasg'
     ],
     'application' => [
         'controllersDir' => APP_DIR . '/controllers/',
@@ -15,8 +15,8 @@ return new \Phalcon\Config([
         'libraryDir' => APP_DIR . '/library/',
         'pluginsDir' => APP_DIR . '/plugins/',
         'cacheDir' => APP_DIR . '/cache/',
-        'baseUri' => '/sgpp/',
-        'publicUrl' => '/sgpp',
+        'baseUri' => '/zentasg/',
+        'publicUrl' => '/zentasg',
         'cryptSalt' => 'eEAfR|_&G&f,+vU]:jFr!!A&+71w1Ms9~8_4L!<@[N@DyaIP_2My|:+.u>/6m,$D'
     ],
     'mail' => [
