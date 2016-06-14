@@ -5,9 +5,11 @@ $(document).ready(function(){
 	var numb 		= 0;
 	var url 		= $("#frm").attr('action');
 
+	carga_registros();
+
 	$(document).on('change', '#proyectos', function(){
 		quitar_alerta();
-		carga_registros();
+		proyecto 	= 	$("#proyectos").val();
 	});
 
 	$(document).on('change', '#fecha', function(){
@@ -19,24 +21,20 @@ $(document).ready(function(){
 
 		quitar_alerta();
 
-		// verificamos si el proyecto está seleccionado
-		if(proyecto == 0){
-			alerta("¡Debe seleccionar un proyecto!", 'alert-warning');
-			return  false;
-		}else{
+		
 
-			numb++;
+		numb++;
 
-			// creamos el bloque en la bd
-			idbloque = crear_bloque(proyecto, numb);
+		// creamos el bloque en la bd
+		idbloque = crear_bloque(proyecto, numb);
 
-			if(!idbloque)
-			{
-				alerta("¡Lo sentimos, ha ocurrido un error al crear el bloque!", 'alert-danger');
-				log("¡Error al crear bloque!");
-				return false;
-			}
+		if(!idbloque)
+		{
+			alerta("¡Lo sentimos, ha ocurrido un error al crear el bloque!", 'alert-danger');
+			log("¡Error al crear bloque!");
+			return false;
 		}
+		
 		
 
 		// Añadimos el bloque
@@ -162,7 +160,9 @@ $(document).ready(function(){
 
 		if(typeof idbloque !== "undefined")
 		{
+			// se quiere crear una nueva actividad
 			idActividad = 0;
+			if(proyecto 	== 0){alerta("¡Favor seleccionar un proyecto!", 'alert-warning'); return false;}
 		
 		}else{
 			idActividad = $(this).attr('data-id');
@@ -173,6 +173,8 @@ $(document).ready(function(){
 				alerta("¡Lo sentimos, ha ocurrido un error al obtener actividad!", 'alert-danger');
 				return false;
 			}
+
+			
 		}
 
 		var actividad 		= $(this).parent().parent().children(".inputAct").children().val();
@@ -182,7 +184,7 @@ $(document).ready(function(){
 
 		if(actividad 	== ''){alerta("¡Favor ingresar la descripción de la actividad!", 'alert-warning'); return false;}
 		if(horas 		== ''){alerta("¡Favor ingresar las horas planificadas!", 'alert-warning'); return false;}			
-		if(proyecto 	== ''){alerta("¡Favor seleccionar un proyecto!", 'alert-warning'); return false;}
+		
 
 		var fecha		= $("#fecha").val();
 		if(fecha 		== ''){alerta("¡Favor seleccionar una fecha!", 'alert-warning'); return false;}
@@ -221,8 +223,11 @@ $(document).ready(function(){
 
 	function crear_bloque(proyecto, numb)
 	{
+
+		fecha		= $("#fecha").val();
+		if(fecha == ''){return false;}
+
 		var datos = {
-			'proyecto' 	: proyecto,
 			'fecha'		: fecha,
 			'orden' 	: numb
 		}
@@ -254,7 +259,6 @@ $(document).ready(function(){
 				// una vez eliminado, quitamos el div
 				$("#bloque-"+data.id).addClass('danger').fadeOut('slow',function(){
 	            	$(this).remove();
-	            	updateNumBloques();
 	            });
 			}else{
 				alerta(data.msg, 'alert-danger');
@@ -290,17 +294,14 @@ $(document).ready(function(){
 
 		$("#bloques").html("");
 
-		proyecto 	= $("#proyectos").val();
 		fecha		= $("#fecha").val();
-
-		if(proyecto == 0){return false;}
 		if(fecha == ''){return false;}
 
 
 		//se cargaran los bloques y actividades creadas, y se seteara el numero de bloques
 
 		var datos = {
-			'proyecto'	: 	proyecto,
+			//'proyecto'	: 	proyecto,
 			'fecha' 	: 	fecha
 		}
 

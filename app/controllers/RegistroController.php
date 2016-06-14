@@ -45,7 +45,7 @@
 	    {
 			$bloque = new Bloque();
 
-		    $bloque->proyecto_id 		= $this->request->getPost("proyecto", "int");
+		    //$bloque->proyecto_id 		= $this->request->getPost("proyecto", "int");
 		    $bloque->usuario_id      	= $this->auth->getIdentity()['id'];
 		    $bloque->fecha           	= $this->request->getPost("fecha");
 		    $bloque->orden             	= $this->request->getPost("orden", "int");
@@ -140,16 +140,17 @@
 	    		# para crear una nueva actividad
 	    		$actividad = new Actividad();
 	    		
-	    		# al crearlo ponemos el bloque al que pertenece !
+	    		# al crearlo ponemos el bloque y el proyecto al que pertenece !
 	    		$actividad->bloque_id 		= $this->request->getPost("idbloque", "int");
+	    		$actividad->proyecto_id		= $this->request->getPost("proyecto", 'int');
 
 	    	} else {
 	    		# para actualizar actividad existente
 	    		$actividad = Actividad::findFirst($idact);
 	    	}
 
-	    	$hh_estimadas = $this->getFloatByHrs($this->request->getPost("horas"));
-	    	$horas_reales = $this->getFloatByHrs($this->request->getPost("horas_reales"));
+	    	$hh_estimadas = $this->getIntByHrs($this->request->getPost("horas"));
+	    	$horas_reales = $this->getIntByHrs($this->request->getPost("horas_reales"));
 
 	    	if($hh_estimadas == 0){
 	    		$data['estado'] = false;
@@ -186,18 +187,16 @@
 
 	    public function cargarRegistrosAction()
 	    {
-	    	$proyecto 	= 	$this->request->getPost("proyecto", "int");
+	    	//$proyecto 	= 	$this->request->getPost("proyecto", "int");
 	    	$fecha 		=	$this->request->getPost("fecha");
 	    	$usuario 	=	$this->auth->getIdentity()['id'];
 
 	    	// Query robots binding parameters with both string and integer placeholders
-			$conditions = "proyecto_id = :proyecto: 
-						   AND usuario_id = :usuario:
+			$conditions = "usuario_id = :usuario:
 						   AND fecha = :fecha:";
 
 			// Parameters whose keys are the same as placeholders
 	    	$params = array(
-		    			"proyecto" 	=> $proyecto,
 		    			"usuario"  	=> $usuario,
 		    			"fecha" 	=> $fecha
 		    		);
@@ -223,8 +222,8 @@
                 $j = 0;
                 foreach ($bloque->actividad as $actividad) {
                 	$data['bloques'][$i]['actividades'][$j]['id'] 			= $actividad->id;
-                    $data['bloques'][$i]['actividades'][$j]['hh_estimadas'] = $this->floatToTime($actividad->hh_estimadas);
-                    $data['bloques'][$i]['actividades'][$j]['hh_reales'] 	= $this->floatToTime($actividad->hh_reales);
+                    $data['bloques'][$i]['actividades'][$j]['hh_estimadas'] = $this->IntToTime($actividad->hh_estimadas);
+                    $data['bloques'][$i]['actividades'][$j]['hh_reales'] 	= $this->IntToTime($actividad->hh_reales);
                     $data['bloques'][$i]['actividades'][$j]['descripcion'] 	= $actividad->descripcion;
 
                     $cntHrsE+=$actividad->hh_estimadas;
@@ -233,8 +232,8 @@
                     $j++;
                 }
 
-                $data['bloques'][$i]['cntHrsR'] = $this->floatToTime($cntHrsR);
-                $data['bloques'][$i]['cntHrsE'] = $this->floatToTime($cntHrsE);
+                $data['bloques'][$i]['cntHrsR'] = $this->IntToTime($cntHrsR);
+                $data['bloques'][$i]['cntHrsE'] = $this->IntToTime($cntHrsE);
 
                 $i++;
             }
@@ -285,19 +284,34 @@
 			return true;
 	    }
 
-	    private function getFloatByHrs($horas)
-	    {
-	    	$arr = explode(':', $horas);
-	    	$h = $arr[0];
-	    	$m = $arr[1];
+	    private function getIntByHrs($horas)
+        {
+            $arr = explode(':', $horas);
+            $h = $arr[0];
+            $m = $arr[1];
 
-			$num = ( ($h*3600 + $m*60) /60)/60;
+            if($h>0){
+                $hrs = $h*60;
+            }else{
+                $hrs = 0;
+            }
 
-			return floatval(round($num, 3));
-	    }
+            return $hrs+$m;
+        }
 
-	    private function floatToTime($float)
-	    {
-	    	return sprintf('%02d:%02d', (int) $float, fmod($float, 1) * 60);
-	    }
+        private function IntToTime($int)
+        {
+            $min = $int % 60;//min
+            $hrs = floor($int / 60);//hrs
+
+            if($min<10){
+                $min = "0".$min;
+            }
+
+            if($hrs<10){
+                $hrs = "0".$hrs;
+            }
+
+            return $hrs.":".$min;
+        }
 	}
