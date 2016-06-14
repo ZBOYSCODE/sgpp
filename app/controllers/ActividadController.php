@@ -63,7 +63,6 @@
 
 	    	$i =0 ;
 
-
 	    	foreach ($bloques as $bloque)
 	    	{
 
@@ -74,23 +73,36 @@
 
                 $data['user'][$bloque->usuario_id]['nombre'] = $bloque->usuario->name;
 
+
                 foreach ($bloque->actividad as $actividad) {
 
-                	$data['user'][$bloque->usuario_id]['actividades'][$j]['proyecto'] 		= $actividad->proyecto->proy_nombre;
+                	$arr['id'] 			= $actividad->id;
+                	$arr['proyecto'] 		= $actividad->proyecto->proy_nombre;
+                	$arr['hh_estimadas'] 	= $this->IntToTime($actividad->hh_estimadas);
+                	$arr['hh_reales'] 	= $this->IntToTime($actividad->hh_reales);
+                	$arr['descripcion'] 	= $actividad->descripcion;
 
-                	$data['user'][$bloque->usuario_id]['actividades'][$j]['id'] 			= $actividad->id;
-                    $data['user'][$bloque->usuario_id]['actividades'][$j]['hh_estimadas'] 	= $this->IntToTime($actividad->hh_estimadas);
-                    $data['user'][$bloque->usuario_id]['actividades'][$j]['hh_reales'] 		= $this->IntToTime($actividad->hh_reales);
-                    $data['user'][$bloque->usuario_id]['actividades'][$j]['descripcion'] 	= $actividad->descripcion;
+                	$data['user'][$bloque->usuario_id]['actividades'][] = $arr;
 
                     $cntHrsE+=$actividad->hh_estimadas;
                     $cntHrsR+=$actividad->hh_reales;
 
+
                     $j++;
                 }
 
-                $data['user'][$bloque->usuario_id]['cntHrsR'] = $this->IntToTime($cntHrsR);
-                $data['user'][$bloque->usuario_id]['cntHrsE'] = $this->IntToTime($cntHrsE);
+                if(!isset($data['user'][$bloque->usuario_id]['cntHrsR'])){
+                	$data['user'][$bloque->usuario_id]['cntHrsR'] = 0;
+                }
+
+                if(!isset($data['user'][$bloque->usuario_id]['cntHrsE'])){
+                	$data['user'][$bloque->usuario_id]['cntHrsE'] = 0;
+                }
+
+                $data['user'][$bloque->usuario_id]['cntHrsR'] += $cntHrsR;
+                $data['user'][$bloque->usuario_id]['cntHrsE'] += $cntHrsE;
+
+                //$this->IntToTime
 
                 $i++;
             }
@@ -103,7 +115,7 @@
             	$data['estado'] = false;
             	$data['msg']	= "no se encontraron resultados";
             }
-            
+
 	    	echo json_encode($data, JSON_PRETTY_PRINT);
 	    }
 

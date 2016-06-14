@@ -84,8 +84,8 @@ $(document).ready(function(){
 			jQuery('<div/>', {
 			    class: 'row',
 			    html: 	"<div class='form-group col-xs-4 col-xs-offset-4'><strong>Total</strong></div>"+
-		    			"<div class='form-group col-xs-2 '><strong>"+b.cntHrsE+" Hrs.</strong></div> "+
-		    			"<div class='form-group col-xs-2'><strong>"+b.cntHrsR+" Hrs.</strong></div> "
+		    			"<div class='form-group col-xs-2 '><strong>"+IntToTime(b.cntHrsE)+" Hrs.</strong></div> "+
+		    			"<div class='form-group col-xs-2'><strong>"+IntToTime(b.cntHrsR)+" Hrs.</strong></div> "
 
 			}).appendTo('#usr-'+id);
 
@@ -109,6 +109,22 @@ $(document).ready(function(){
             }
         });
 	}
+
+	function IntToTime(int)
+        {
+            var min = int % 60;//min
+            var hrs = Math.floor(int / 60);//hrs
+
+            if(min<10){
+                min = "0"+min;
+            }
+
+            if(hrs<10){
+                hrs = "0"+hrs;
+            }
+
+            return hrs+":"+min;
+        }
 
 	function alerta(msg, tipo_alerta){
 
