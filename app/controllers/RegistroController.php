@@ -222,6 +222,7 @@
                 $j = 0;
                 foreach ($bloque->actividad as $actividad) {
                 	$data['bloques'][$i]['actividades'][$j]['id'] 			= $actividad->id;
+                	$data['bloques'][$i]['actividades'][$j]['proyecto_id'] 	= $actividad->proyecto_id;
                     $data['bloques'][$i]['actividades'][$j]['hh_estimadas'] = $this->IntToTime($actividad->hh_estimadas);
                     $data['bloques'][$i]['actividades'][$j]['hh_reales'] 	= $this->IntToTime($actividad->hh_reales);
                     $data['bloques'][$i]['actividades'][$j]['descripcion'] 	= $actividad->descripcion;
