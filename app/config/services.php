@@ -68,13 +68,11 @@ $di->set('collectionManager', function(){
  
 $di->set('db', function () use ($config) {
     return new DbAdapter(array(
-        'host' => $config->database->host,
-        'username' => $config->database->username,
-        'password' => $config->database->password,
-        'dbname' => $config->database->dbname,
-        'options' => array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        )        
+        'host'      => $config->database->host,
+        'username'  => $config->database->username,
+        'password'  => $config->database->password,
+        'dbname'    => $config->database->dbname,
+        'charset'   => 'utf8',       
     ));
 });
 
