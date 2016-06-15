@@ -1,0 +1,26 @@
+<div class='container'>
+	<hr>
+
+
+	<div class="col-md-3 col-md-offset-4">
+
+		<form class='form-inline' action="<?php print $this->url->get('actividad')?>" id='frm'>
+
+			<div class="form-group">
+				<label for="fecha">Fecha</label>
+				<input type="date" name='fecha' id='fecha' class='form-control input-lg' value="<?php echo $pcData['fecha']; ?>">
+			</div>
+		</form>
+		
+		
+		<div id='message_error' class='col-md-12'></div>
+		
+	</div>
+	
+	<br><br>
+	
+	<div class="col-md-10 col-md-offset-1">
+		<div class="data" id='data'></div>
+	</div>
+
+</div>

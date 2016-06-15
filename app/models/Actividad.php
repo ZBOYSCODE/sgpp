@@ -21,5 +21,7 @@
 	    public function initialize()
 	    {
 	        $this->belongsTo("bloque_id", __NAMESPACE__ . "\Bloque", "id", array('alias' => 'bloque'));
+
+	        $this->belongsTo("proyecto_id", __NAMESPACE__ . "\Proyecto", "proy_id", array('alias' => 'proyecto'));
 	    }
 	}
