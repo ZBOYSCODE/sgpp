@@ -5,7 +5,9 @@ return new \Phalcon\Config([
         'host' => 'localhost',
         'username' => 'root',
         'password' => 'z3nta',
-        'dbname' => 'zentasg'
+        'dbname' => 'zentasg',
+	'charset' => 'utf8'
+	
     ],
     'application' => [
         'controllersDir' => APP_DIR . '/controllers/',
