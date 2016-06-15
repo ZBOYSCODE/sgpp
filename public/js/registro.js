@@ -21,8 +21,6 @@ $(document).ready(function(){
 
 		quitar_alerta();
 
-		
-
 		numb++;
 
 		// creamos el bloque en la bd
@@ -35,8 +33,6 @@ $(document).ready(function(){
 			return false;
 		}
 		
-		
-
 		// Añadimos el bloque
 		jQuery('<div/>', {
 		    id: 'bloque-'+idbloque,
@@ -123,9 +119,15 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '.add-actividad', function(){
-
+		
 		quitar_alerta();
+		
+		if(proyecto 	== 0){alerta("¡Favor seleccionar un proyecto!", 'alert-warning'); return false;}
 
+
+		var nombre_proyecto = $("#proyectos option:selected").text();
+
+	
 		idbloque = $(this).attr('data-bloque');
 	
 		// Añadimos una actividad al bloque correspondiente
@@ -133,16 +135,16 @@ $(document).ready(function(){
 		    //id: 'act-'+idbloque,
 		    class: 'col-md-12 actividad',
 		    //'data-num': idbloque,
-		    html: "<div class='form-horizontal'>"+
+		    html: 	"<label>"+nombre_proyecto+"</label>"+
+		    		"<div class='form-horizontal'>"+
 		    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' placeholder='Actividad' /></div> "+
 		    			"<div class='form-group col-md-2 inputHE'><input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' type='time' value='00:00' /></div> "+
 		    			"<div class='form-group col-md-2 inputHR'><input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' type='time' value='00:00' /></div> "+
 		    			"<div class='form-group col-md-2'>"+
-		    				"<a class='btn btn-default guardar-act' href='#' role='button' data-bloque='"+idbloque+"'>"+
+		    				"<a class='btn btn-default guardar-act' href='#' role='button' data-bloque='"+idbloque+"' data-proyecto='"+proyecto+"'>"+
 		    				"<i class='hi hi-floppy_disk' title='Añadir actividad'></i></a>"+
 		    				"<a class='btn btn-default delete-act' href='#' role='button'>"+
 		    				"<i class='fa fa-trash-o' title='Eliminar actividad'></i></a>"+
-
 		    			"</div> "+
 		    	"	</div>"
 
@@ -157,12 +159,17 @@ $(document).ready(function(){
 		var $btn = $(this);
 
 		idbloque 		= $(this).attr('data-bloque');
+		var idproyecto 	= $(this).attr('data-proyecto');
 
 		if(typeof idbloque !== "undefined")
 		{
 			// se quiere crear una nueva actividad
 			idActividad = 0;
-			if(proyecto 	== 0){alerta("¡Favor seleccionar un proyecto!", 'alert-warning'); return false;}
+			
+			if(idproyecto 	== 0){
+				alerta("¡Favor seleccionar un proyecto!", 'alert-warning');
+				return false;
+			}
 		
 		}else{
 			idActividad = $(this).attr('data-id');
@@ -195,7 +202,7 @@ $(document).ready(function(){
 			'descripcion' 	: actividad,
 			'horas'			: horas,
 			'horas_reales'	: horas_reales,
-			'proyecto' 		: proyecto,
+			'proyecto' 		: idproyecto,
 			'fecha'			: fecha
 		}
 		 
@@ -365,17 +372,24 @@ $(document).ready(function(){
 
 			if(b.actividades){
 				$.each(b.actividades, function(c, act){
+
+
+
+					var nombre_proyecto = $("#proyectos [value='"+act.proyecto_id+"']").text();
+
+
 					// Añadimos una actividad al bloque correspondiente
 					jQuery('<div/>', {
 					    id: 'act-'+act.id,
 					    class: 'col-md-12 actividad',
 					    //'data-num': idbloque,
-					    html: "<div class='form-horizontal'>"+
+					    html: 	"<label>"+nombre_proyecto+"</label>"+
+					    		"<div class='form-horizontal'>"+
 					    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' 		type='text'	value='"+act.descripcion+"' placeholder='Actividad' /></div> "+
 					    			"<div class='form-group col-md-2 inputHE'> <input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' 		type='time' value='"+act.hh_estimadas+"' /></div> "+
 					    			"<div class='form-group col-md-2 inputHR'> <input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' 	type='time' value='"+act.hh_reales+"' /></div> "+
 					    			"<div class='form-group col-md-2 '>"+
-					    				"<a class='btn btn-default guardar-act' href='#' role='button' data-id='"+act.id+"'>"+
+					    				"<a class='btn btn-default guardar-act' href='#' role='button' data-id='"+act.id+"' data-proyecto='"+act.proyecto_id+"'>"+
 					    				"<i class='fa fa-refresh' title='Actualizar actividad'></i></a>"+
 					    				"<a class='btn btn-default delete-act' href='#' role='button' data-id='"+act.id+"'>"+
 		    							"<i class='fa fa-trash-o' title='Eliminar actividad'></i></a>"+
