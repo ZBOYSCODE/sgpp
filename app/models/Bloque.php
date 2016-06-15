@@ -9,7 +9,6 @@
 	class Bloque extends Model
 	{
 		public $id;
-		public $proyecto_id;
 		public $usuario_id;
 		public $horas = 2;
 		public $fecha;

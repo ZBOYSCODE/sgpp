@@ -8,6 +8,7 @@
 	{
 		public $id;
 		public $bloque_id;
+		public $proyecto_id;
 		public $hh_estimadas;
 		public $hh_reales;
 		public $descripcion;
