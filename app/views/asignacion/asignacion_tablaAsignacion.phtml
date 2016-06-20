@@ -20,13 +20,25 @@
 									<a 	href="javascript:void(0)" 
 									 
 										data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&ps_id=<?php print($data['prsn_smna_id']) ?>" 
-										class="widget widget-asignacion widget-hover-effect1"
+										class="widget widget-asignacion widget-hover-effect1 tabla-proyecto"
 										data-toggle="tooltip"
 										data-original-title="
 											<?php foreach ($dataCompleta as $proy) {
 												print($proy['proy_nombre'].':'.$proy['hh_porcentaje_asignadas'].'%&#10');			
 											} ?>">
-										<div class="widget-simple themed-background-<?php print($data['proy_color']) ?>">
+
+										<?php
+											if($data['hh_total_porcentaje_asignadas'] == 100){
+
+												$color_label = "background_color_green";
+											}else{
+												$color_label = "background_color_red";
+											}
+										?>
+
+										<div class='cinta_proyecto themed-background-<?php print($data['proy_color']); ?>'></div>
+
+										<div class="widget-simple <?php echo $color_label; ?> ">
 											<div class="widget-content widget-content-light">
 												<?php print($data['hh_total_porcentaje_asignadas']) ?>%	
 											</div>
@@ -35,9 +47,10 @@
 								</td>
 							<?php else: ?>
 								<td>
-									<a href="javascript:void(0)" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1" >
-										<div class="widget-simple themed-background-night ?>">
-											<div class="widget-content widget-content-light">
+									<a href="javascript:void(0)" data-val="rut=<?php print($persona['rut']) ?>&fecha=<?php print($mondayWeek) ?>&pm_id=<?php print(isset($pcData['data']['prsn_mes_id'])?$pcData['data']['prsn_mes_id']:'') ?>" class="widget widget-asignacion widget-hover-effect1 tabla-proyecto" >
+										<div class='cinta_proyecto background_color_red'></div>
+										<div class="widget-simple themed-background-night ?> background_color_red">
+											<div class="widget-content widget-content-light ">
 												0%	
 											</div>
 										</div>

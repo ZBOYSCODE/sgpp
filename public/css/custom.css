@@ -391,3 +391,24 @@ body {
 	    margin-bottom: 16px;
 	}
 }
+
+
+.tabla-proyecto .widget-simple{
+	padding-top: 5px !important;
+}
+
+.background_color_green{
+	background-color: rgba(70,160,50,.8) !important;
+}
+
+.background_color_red{
+	background-color: rgba(250,0,0,0.55) !important;
+}
+
+.cinta_proyecto{
+	position: relative;
+	height: 10px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
