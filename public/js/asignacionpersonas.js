@@ -13,22 +13,39 @@ $(document).ready(function(){
 
 		users.push(id);
 
-		//$("#listado_personas ul").append("<li>"+name+"</li>");
-
 		// Añadimos el bloque
 		jQuery('<li/>', {
 		    id: id,
+		    'data-name': name,
 		    class: 'lista_users',
-		    text: name
+		    html: name+" <a class='quitar_select'><i class='fa fa-times'></i></a>"
 		}).appendTo('.listado_personas ul');
 
 		jQuery('<input/>', {
 			name: 'users[]',
 			type: 'hidden',
-		    value: id
+		    value: id,
+		    id: 'inp-'+id
 		}).appendTo('#input_users');
 
-		
+	});
+
+	$(document).on('click', '.quitar_select', function(){
+
+		var id 		= $(this).parent().attr('id');
+		var name 	= $(this).parent().attr('data-name');
+
+		$(this).parent().hide('fast', function(){
+			$("#inp-"+id).remove();
+			$(this).remove();
+		})
+
+
+
+		$("#personaSelected").append('<option value='+id+'>'+name+'</option>');
+
+		$('#personaSelected').trigger("chosen:updated");
+
 	});
 
 });
