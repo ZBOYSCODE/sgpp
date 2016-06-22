@@ -7,7 +7,7 @@ use Phalcon\Mvc\Model\Query;
 
 class PersonaSemana extends Model
 {
-
+    public $prsn_smna_id;
     public $prsn_proy_id;
     public $rut;
     public $proy_id;
@@ -16,6 +16,16 @@ class PersonaSemana extends Model
 
     public function initialize()
     {
+        $this->hasManyToMany(
+            "prsn_smna_id",
+            "Gabs\Models\ProyectoPersonaSemana",
+            "prsn_smna_id",
+            "proy_id",
+            "Gabs\Models\Proyecto",
+            "proy_id",
+            array('alias' => 'proyectos')
+        );
+
     }
 
     public function getSource()

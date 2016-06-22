@@ -43,8 +43,18 @@ class AsignacionController extends ControllerBase
     	$pcData['personas'] = $modelP->getPersonasByProyecto($pcData['proyectoSelected']);
     	$pcData['data'] = $modelPP->getData($pcData['proyectoSelected']);
     	$pcData['weeks'] = $this->getWeeks(5);
+        
 
-        echo $this->view->render('theme',array('topMenu'=>$menu,'menuSel'=>'', 'sideBar'=>$sideBar, 'sideBarSel'=>'gestion', 'pcView'=>$content,'pcData'=>$pcData, 'jsScript' => $jsScript));  	    	    	
+        $addJs[] = 'js/asignacionpersonas.js';
+        
+        echo $this->view->render('theme',array( 'topMenu'=>$menu,
+                                                'menuSel'=>'',
+                                                'sideBar'=>$sideBar,
+                                                'sideBarSel'=>'gestion',
+                                                'pcView'=>$content,
+                                                'pcData'=>$pcData,
+                                                'jsScript' => $jsScript,
+                                                'addJs' => $addJs));
 
     }
 
@@ -85,13 +95,16 @@ class AsignacionController extends ControllerBase
 
     public function modalAsignacionProyectoAction(){
 
+
+
     	$pcData['persona'] = Personas::findFirst('rut = '.$_POST['rut'])->toArray();
     	$pcData['fechaInicio'] = $_POST['fecha'];
     	$pcData['fechaFin'] = date('d-m-Y',strtotime($_POST['fecha']." + 4 days"));
 
     	$pcData['proyectoSelected'] = $_POST['proy_id'];
 
-    	if(isset($_POST['pps_id'])){
+    	if(isset($_POST['pps_id']))
+        {
     		$pcData['bloquePPS'] = ProyectoPersonaSemana::findFirst('proy_ps_id = '.$_POST['pps_id'])->toArray();
     		$pcData['bloquePS'] = PersonaSemana::findFirst('prsn_smna_id = "'.$_POST['ps_id'].'"')->toArray();
     	} else{
@@ -99,6 +112,9 @@ class AsignacionController extends ControllerBase
     		$modelPS = new PersonaSemana();
     		$pcData['bloquePS'] = $modelPS->getPersonaSemanaByFechaRut($data);
     	}
+
+
+        $pcData['proySemana'] = $this->getProyectosSemana($_POST['fecha'], $_POST['rut']);
 
     	$toRend = $this->view->render('asignacion/asignacion_modal_editarAsignacionProyectos',array('pcData'=>$pcData, 'jsScript' => ''));  
 
@@ -108,6 +124,60 @@ class AsignacionController extends ControllerBase
     	$this->mifaces->addPosRendEval('$(".select-chosen").chosen({width:"100%"});');
     	$this->mifaces->run();
     } 
+
+
+    public function getProyectosSemana($fecha, $rut)
+    {
+
+        $fecha = date('Y-m-d', strtotime($fecha));
+
+        // lista de proyectos asignados
+        $conditions = "fecha_inicio_semana = :fecha: AND rut = :rut:";
+
+        $params = array(
+                    "fecha"     => $fecha,
+                    "rut"       => $rut
+                );
+
+        $pcData['proySemana'] = PersonaSemana::find(array(
+                $conditions,
+                "bind" => $params
+        ));
+
+        $arr = array();
+        foreach ($pcData['proySemana'] as $personasemana)
+        {
+            foreach ($personasemana->proyectos as $proyectos) {
+
+                $arr[$proyectos->proy_id]['nombre'] = $proyectos->proy_nombre;
+                $arr[$proyectos->proy_id]['hh'] = $this->getHHAsignadas($proyectos->proy_id, $personasemana->prsn_smna_id);
+            }
+            
+        }
+
+        return $arr;
+    }
+
+    private function getHHAsignadas($proy_id, $semana_id)
+    {
+        // lista de proyectos asignados
+        $conditions = "prsn_smna_id = :semana_id: AND proy_id = :proy_id:";
+
+        $params = array(
+                    "semana_id"     => $semana_id,
+                    "proy_id"       => $proy_id
+                );
+
+        $result = ProyectoPersonaSemana::findFirst(array(
+                $conditions,
+                "bind" => $params
+        ));
+
+        return $result->hh_porcentaje_asignadas;
+    }
+
+
+
 
     public function editarBloqueProyectoAction(){
 		$this->mifaces->newFaces();
@@ -221,12 +291,24 @@ class AsignacionController extends ControllerBase
     } 
 
     public function agregarPersonaAction(){
+
+        foreach ($_POST['users'] as $usuario)
+        {
+            $pp = new PersonaProyecto();
+            $pp->rut = $usuario;
+            $pp->proy_id = $_POST['proy_id'];
+            $pp->activo = 1;
+            $pp->save();
+        }
+
+        /*
 		$pp = new PersonaProyecto();
 		$pp->rut = $_POST['personaSelected'];
 		$pp->proy_id = $_POST['proy_id'];
 		$pp->activo = 1;
-
 		$pp->save();
+        */
+
     	//Renderizado
     	$pcData['proyectoSelected'] = Proyecto::findFirst("proy_id = ".$pp->proy_id)->toArray();
 
@@ -242,7 +324,8 @@ class AsignacionController extends ControllerBase
     	$this->mifaces->newFaces();
     	$this->mifaces->addToRend('tablaData',$toRend);
     	$this->mifaces->addPreRendEval('$("#modal-asignar").modal("hide");');
-		$this->mifaces->run();		
+		$this->mifaces->run();
+
     }
 
 

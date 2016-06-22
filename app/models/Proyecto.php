@@ -17,6 +17,16 @@ class Proyecto extends Model
 
     public function initialize()
     {
+        $this->hasManyToMany(
+            "proy_id",
+            "Gabs\Models\ProyectoPersonaSemana",
+            "proy_id",
+            "prsn_smna_id",
+            "Gabs\Models\PersonaSemana",
+            "prsn_smna_id",
+            array('alias' => 'personasemanas')
+        );
+
     }
 
     public function getSource()

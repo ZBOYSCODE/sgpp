@@ -17,6 +17,13 @@ class ProyectoPersonaSemana extends Model
 
     public function initialize()
     {
+        $this->belongsTo('proy_id', 'Gabs\Models\Proyecto', 'proy_id', 
+            array('alias' => 'proyectos')
+        );
+        
+        $this->belongsTo('prsn_smna_id', 'Gabs\Models\PersonaSemana', 'prsn_smna_id', 
+            array('alias' => 'personasemanas')
+        );
     }
 
     public function getSource()

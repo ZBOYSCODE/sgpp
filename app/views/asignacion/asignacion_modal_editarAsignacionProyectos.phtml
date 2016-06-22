@@ -1,5 +1,4 @@
   <div class="modal-dialog">
-
     <!-- Modal content-->
 	<div class="modal-content">
 		<div class="modal-header themed-background-default">
@@ -11,7 +10,23 @@
       	<div class="modal-body" style="min-height:15em;">
       	 	<h3 class="text-center"><strong><?php print($pcData['fechaInicio']) ?> <small>hasta</small> <?php print($pcData['fechaFin']) ?></h3></strong>
 			<fieldset >
-				<h4>HH Disponible <?php print($pcData['persona']['nombres']." ".$pcData['persona']['apellido_paterno']) ?>: <strong><span id="porcentajeDisponible"><?php print(isset($pcData['bloquePS']['hh_total_porcentaje_asignadas'])?100-$pcData['bloquePS']['hh_total_porcentaje_asignadas']:100) ?></span>%</strong></h4>
+
+				<h4><?php print($pcData['persona']['nombres']." ".$pcData['persona']['apellido_paterno']) ?></h4>
+				
+				<ul>
+					<?php
+						foreach ($pcData['proySemana'] as $proyecto) {
+							echo "<li>".$proyecto['nombre'].": ".$proyecto['hh']."%</li>";
+						}
+
+					?>
+				</ul>
+				
+				<h4>HH Disponible : <strong><span id="porcentajeDisponible"><?php print(isset($pcData['bloquePS']['hh_total_porcentaje_asignadas'])?100-$pcData['bloquePS']['hh_total_porcentaje_asignadas']:100) ?></span>%</strong></h4>
+				
+				
+				
+
 				<div class="form-group">
 					<label class="col-md-4 control-label" for="porcentaje_hh">Porcentaje de HH</label>
 					<div class="col-md-8">
