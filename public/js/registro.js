@@ -3,9 +3,19 @@ $(document).ready(function(){
 	var proyecto 	= 0;
 	var fecha 		= null;
 	var numb 		= 0;
+	var num_act 	= 0;
 	var url 		= $("#frm").attr('action');
 
+	// array que tendrán los datos para crear los 'select'
+	var slc_proy;
+	var slc_estado;
+	
+
+	get_proyectos();
+	get_estados();
+	
 	carga_registros();
+	
 
 	$(document).on('change', '#proyectos', function(){
 		quitar_alerta();
@@ -29,7 +39,7 @@ $(document).ready(function(){
 		if(!idbloque)
 		{
 			alerta("¡Lo sentimos, ha ocurrido un error al crear el bloque!", 'alert-danger');
-			log("¡Error al crear bloque!");
+			$.log("¡Error al crear bloque!");
 			return false;
 		}
 		
@@ -43,7 +53,7 @@ $(document).ready(function(){
 		// Añadimos el div superior del bloque
 		jQuery('<div/>', {
 		    id: 'tit-'+idbloque,
-		    class: 'row col-md-12',
+		    class: 'row',
 		    'data-num': numb,
 		    html: 	"<div class='col-xs-9'>"+
 		    			"<p class='num_bloque' id='hrs-"+idbloque+"'>Horas estimadas : <span class='hrsE'>00:00</span> hrs."+
@@ -122,11 +132,6 @@ $(document).ready(function(){
 		
 		quitar_alerta();
 		
-		if(proyecto 	== 0){alerta("¡Favor seleccionar un proyecto!", 'alert-warning'); return false;}
-
-
-		var nombre_proyecto = $("#proyectos option:selected").text();
-
 	
 		idbloque = $(this).attr('data-bloque');
 	
@@ -135,20 +140,31 @@ $(document).ready(function(){
 		    //id: 'act-'+idbloque,
 		    class: 'col-md-12 actividad',
 		    //'data-num': idbloque,
-		    html: 	"<label>"+nombre_proyecto+"</label>"+
-		    		"<div class='form-horizontal'>"+
-		    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' placeholder='Actividad' /></div> "+
+		    html: 	"<label>Nueva actividad</label>"+
+
+		    		"<div class='row'>"+
+		    			"<div class='form-group col-md-4 col-md-offset-1 inputProy'><select class='form-control input-actividad' id='input_proy_"+idbloque+""+num_act+"'><option value='0'>Seleccione</option></select></div>"+
 		    			"<div class='form-group col-md-2 inputHE'><input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' type='time' value='00:00' /></div> "+
 		    			"<div class='form-group col-md-2 inputHR'><input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' type='time' value='00:00' /></div> "+
-		    			"<div class='form-group col-md-2'>"+
-		    				"<a class='btn btn-default guardar-act' href='#' role='button' data-bloque='"+idbloque+"' data-proyecto='"+proyecto+"'>"+
+		    			"<div class='form-group col-md-1'>"+
+		    				"<a class='btn btn-primary form-control guardar-act' href='#' role='button' data-bloque='"+idbloque+"' data-proyecto='"+proyecto+"'>"+
 		    				"<i class='hi hi-floppy_disk' title='Añadir actividad'></i></a>"+
-		    				"<a class='btn btn-default delete-act' href='#' role='button'>"+
+		    			"</div> "+
+		    			"<div class='form-group col-md-1'>"+
+		    				"<a class='btn btn-danger delete-act form-control' href='#' role='button'>"+
 		    				"<i class='fa fa-trash-o' title='Eliminar actividad'></i></a>"+
 		    			"</div> "+
+		    			"<div class='form-group col-md-8 col-md-offset-1 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' placeholder='Actividad' /></div> "+
+		    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad' id='input_estado_"+idbloque+""+num_act+"'><option value='0'>Seleccione</option></select></div>"+
+		    			
 		    	"	</div>"
 
 		}).appendTo('#tit-'+idbloque);
+
+		$("#input_proy_"+idbloque+""+num_act).renderSelect(slc_proy);
+		$("#input_estado_"+idbloque+""+num_act).renderSelect(slc_estado);
+
+		num_act++;
 	});
 
 
@@ -159,7 +175,8 @@ $(document).ready(function(){
 		var $btn = $(this);
 
 		idbloque 		= $(this).attr('data-bloque');
-		var idproyecto 	= $(this).attr('data-proyecto');
+
+		var idproyecto 	= $(this).parent().parent().children(".inputProy").children().val();
 
 		if(typeof idbloque !== "undefined")
 		{
@@ -187,8 +204,9 @@ $(document).ready(function(){
 		var actividad 		= $(this).parent().parent().children(".inputAct").children().val();
 		var horas 			= $(this).parent().parent().children(".inputHE").children().val();
 		var horas_reales 	= $(this).parent().parent().children(".inputHR").children().val();
+		var estado 			= $(this).parent().parent().children(".inputEstado").children().val();
 
-
+		if(estado 		== 0) {alerta("¡Favor seleccione estado de la actividad!", 'alert-warning'); return false;}
 		if(actividad 	== ''){alerta("¡Favor ingresar la descripción de la actividad!", 'alert-warning'); return false;}
 		if(horas 		== ''){alerta("¡Favor ingresar las horas planificadas!", 'alert-warning'); return false;}			
 		
@@ -203,6 +221,7 @@ $(document).ready(function(){
 			'horas'			: horas,
 			'horas_reales'	: horas_reales,
 			'proyecto' 		: idproyecto,
+			'estado'		: estado,
 			'fecha'			: fecha
 		}
 		 
@@ -211,6 +230,7 @@ $(document).ready(function(){
 
 		aj.success(function (data) {
 			if(data.estado){
+
 				$btn.removeAttr("data-bloque");
 				$btn.attr('data-id', data.id);
 				$btn.parent().parent().parent().attr("id", "act-"+data.id);
@@ -218,6 +238,8 @@ $(document).ready(function(){
 
 				$btn.children().removeClass("hi hi-floppy_disk");
 				$btn.children().addClass("fa fa-refresh");
+
+				$btn.parent().parent().parent().children('label').text(data.nombre_proyecto);
 
 				alerta('¡Actividad guardada con exito!', 'alert-success');
 			}else{
@@ -295,6 +317,39 @@ $(document).ready(function(){
 		});
 	}
 
+	function get_estados()
+	{
+		var datos = {};
+
+		js = ajax(datos, 'getEstados');
+		js.success(function (data)
+		{
+			if(data.estado)
+			{
+				slc_estado = data.estados;
+
+			}else{
+				alerta(data.msg, 'alert-danger');
+			}
+		});
+	}
+
+	function get_proyectos()
+	{
+		var datos = {};
+
+		js = ajax(datos, 'getProyectos');
+		js.success(function (data)
+		{
+			if(data.estado)
+			{
+				slc_proy = data.proyectos;
+
+			}else{
+				alerta(data.msg, 'alert-danger');
+			}
+		});
+	}
 
 	function carga_registros()
 	{
@@ -330,7 +385,7 @@ $(document).ready(function(){
 		});
 	
 
-		log("Se cargan los registros para el proyecto "+proyecto+" con fecha "+fecha);
+		$.log("Se cargan los registros para el proyecto "+proyecto+" con fecha "+fecha);
 		return true;
 	}
 
@@ -355,7 +410,7 @@ $(document).ready(function(){
 			// Añadimos el div superior del bloque
 			jQuery('<div/>', {
 			    id: 'tit-'+idbloque,
-			    class: 'row col-md-12',
+			    class: 'row',
 			    'data-num': numbloques,
 			    html: 	"<div class='col-xs-9'>"+
 			    			"<p class='num_bloque' id='hrs-"+idbloque+"'>Horas estimadas : <span class='hrsE'>"+b.cntHrsE+"</span> hrs."+
@@ -373,30 +428,36 @@ $(document).ready(function(){
 			if(b.actividades){
 				$.each(b.actividades, function(c, act){
 
-
-
 					var nombre_proyecto = $("#proyectos [value='"+act.proyecto_id+"']").text();
-
-
 					// Añadimos una actividad al bloque correspondiente
 					jQuery('<div/>', {
 					    id: 'act-'+act.id,
 					    class: 'col-md-12 actividad',
 					    //'data-num': idbloque,
 					    html: 	"<label>"+nombre_proyecto+"</label>"+
-					    		"<div class='form-horizontal'>"+
-					    			"<div class='form-group col-md-6 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' 		type='text'	value='"+act.descripcion+"' placeholder='Actividad' /></div> "+
+					    		"<div class='row'>"+
+					    			"<div class='form-group col-md-4 col-md-offset-1 inputProy'><select class='form-control input-actividad' id='input_proy_"+idbloque+"_act"+act.id+"'><option>Seleccione</option></select></div>"+
 					    			"<div class='form-group col-md-2 inputHE'> <input class='form-control input-actividad inhhe' id='input_hh_"+idbloque+"' 		type='time' value='"+act.hh_estimadas+"' /></div> "+
 					    			"<div class='form-group col-md-2 inputHR'> <input class='form-control input-actividad inhhr' id='input_hhreal_"+idbloque+"' 	type='time' value='"+act.hh_reales+"' /></div> "+
-					    			"<div class='form-group col-md-2 '>"+
-					    				"<a class='btn btn-default guardar-act' href='#' role='button' data-id='"+act.id+"' data-proyecto='"+act.proyecto_id+"'>"+
+					    			
+					    			"<div class='form-group col-md-1 '>"+
+					    				"<a class='btn btn-primary guardar-act form-control' href='#' role='button' data-id='"+act.id+"' data-proyecto='"+act.proyecto_id+"'>"+
 					    				"<i class='fa fa-refresh' title='Actualizar actividad'></i></a>"+
-					    				"<a class='btn btn-default delete-act' href='#' role='button' data-id='"+act.id+"'>"+
+					    			"</div>"+
+					    			"<div class='form-group col-md-1 '>"+
+					    				"<a class='btn btn-danger delete-act form-control' href='#' role='button' data-id='"+act.id+"'>"+
 		    							"<i class='fa fa-trash-o' title='Eliminar actividad'></i></a>"+
 					    			"</div> "+
+
+					    			"<div class='form-group col-md-8 col-md-offset-1 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' 		type='text'	value='"+act.descripcion+"' placeholder='Actividad' /></div> "+
+					    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad' id='input_estado_"+idbloque+"_act"+act.id+"'><option value='0'>Seleccione</option></select></div>"+
+
 					    	"	</div>"
 
 					}).appendTo('#tit-'+idbloque);
+
+					$("#input_proy_"+idbloque+"_act"+act.id).renderSelect(slc_proy, act.proyecto_id);
+					$("#input_estado_"+idbloque+"_act"+act.id).renderSelect(slc_estado, act.estado_id);
 				});
 			}
 				
@@ -480,7 +541,7 @@ $(document).ready(function(){
             dataType: 'json',
             success : function(data)
             {
-                log(data.msg);
+                $.log(data.msg);
                 return data; 
             }
         });
@@ -504,10 +565,6 @@ $(document).ready(function(){
 		$("#message_error").children().addClass('danger').hide('fast', function(){
 			$(this).remove();
 		});
-	}
-
-	function log(msg){
-		console.log(msg);
 	}
 
 });

@@ -3,6 +3,7 @@
 
 	use Gabs\Models\Personas;
 	use Gabs\Models\Proyecto;
+	use Gabs\Models\Estado;
 	use Gabs\Models\Bloque;
 	use Gabs\Models\Actividad;
 
@@ -40,6 +41,36 @@
 	        						);  
 	    }
 
+
+	    public function getProyectosAction()
+        {
+            $proyectos = Proyecto::find();
+            $arr = array();
+
+            foreach ($proyectos as $proyecto) {
+                $arr[$proyecto->proy_id] = $proyecto->proy_nombre;
+            }
+
+            $data['estado'] = true;
+            $data['proyectos'] = $arr;
+
+            echo json_encode($data);
+        }
+
+        public function getEstadosAction()
+        {
+            $estados = Estado::find();
+            $arr = array();
+
+            foreach ($estados as $estado) {
+                $arr[$estado->id] = $estado->nombre;
+            }
+
+            $data['estado'] = true;
+            $data['estados'] = $arr;
+
+            echo json_encode($data);
+        }
 
 	    public function crearBloqueAction()
 	    {
@@ -134,7 +165,10 @@
 	    {
 	    	$data['estado'] = true;
 
-	    	$idact = $this->request->getPost("idActividad");
+	    	$idact 		= 	$this->request->getPost("idActividad");
+
+	    	$proyecto 	=	$this->request->getPost("proyecto", 'int');
+	    	$estado 	=	$this->request->getPost("estado", 'int');
 
 	    	if(!$idact){
 	    		# para crear una nueva actividad
@@ -142,7 +176,6 @@
 	    		
 	    		# al crearlo ponemos el bloque y el proyecto al que pertenece !
 	    		$actividad->bloque_id 		= $this->request->getPost("idbloque", "int");
-	    		$actividad->proyecto_id		= $this->request->getPost("proyecto", 'int');
 
 	    	} else {
 	    		# para actualizar actividad existente
@@ -157,14 +190,24 @@
 	    		$data['msg'] 	= "Lo sentimos, debe incluir las horas estimadas";
 	    	}
 
+	    	if($proyecto == 0){
+	    		$data['estado'] = false;
+	    		$data['msg'] 	= "Lo sentimos, debe seleccionar un proyecto";
+	    	}
+
+	    	if($estado == 0){
+	    		$data['estado'] = false;
+	    		$data['msg'] 	= "Lo sentimos, debe seleccionar un estado";
+	    	}
+
 	    	if($data['estado'])
 	    	{
-	    		
+	    		$actividad->proyecto_id		= $proyecto;
 			    $actividad->descripcion 	= $this->request->getPost("descripcion", 'string');
 			    $actividad->hh_estimadas 	= $hh_estimadas;
 			    $actividad->hh_reales 		= $horas_reales;
 			    $actividad->fecha 			= $this->request->getPost("fecha");
-
+			    $actividad->estado_id		= $estado;
 
 
 		        if ($actividad->save())
@@ -172,6 +215,7 @@
 		        	$data['estado'] = true;
 		        	$data['msg']	= "Actividad creada";
 		        	$data['id'] 	= $actividad->id;
+		        	$data['nombre_proyecto'] = $actividad->proyecto->proy_nombre;
 		        } else {
 		        	$data['estado'] = false;
 		        	$data['msg'] 	= "Lo sentimos, los siguientes errores ocurrieron mientras te dabamos de alta: ";
@@ -226,6 +270,7 @@
                     $data['bloques'][$i]['actividades'][$j]['hh_estimadas'] = $this->IntToTime($actividad->hh_estimadas);
                     $data['bloques'][$i]['actividades'][$j]['hh_reales'] 	= $this->IntToTime($actividad->hh_reales);
                     $data['bloques'][$i]['actividades'][$j]['descripcion'] 	= $actividad->descripcion;
+                    $data['bloques'][$i]['actividades'][$j]['estado_id'] 	= $actividad->estado_id;
 
                     $cntHrsE+=$actividad->hh_estimadas;
                     $cntHrsR+=$actividad->hh_reales;
@@ -287,17 +332,23 @@
 
 	    private function getIntByHrs($horas)
         {
-            $arr = explode(':', $horas);
-            $h = $arr[0];
-            $m = $arr[1];
+        	if($horas != ''){
+        		
+        		$arr = explode(':', $horas);
+	            $h = $arr[0];
+	            $m = $arr[1];
 
-            if($h>0){
-                $hrs = $h*60;
-            }else{
-                $hrs = 0;
-            }
+	            if($h>0){
+	                $hrs = $h*60;
+	            }else{
+	                $hrs = 0;
+	            }
 
-            return $hrs+$m;
+	            return $hrs+$m;
+        	}else{
+        		return 0;
+        	}
+	            
         }
 
         private function IntToTime($int)
