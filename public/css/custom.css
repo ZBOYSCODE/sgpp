@@ -412,3 +412,30 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+
+.estado_1{
+	background-color: rgba(240,200,0, .2);
+}
+
+.estado_2{
+	background-color: rgba(0,50,160, .2);
+}
+
+.estado_3{
+	background-color: rgba(200,50,90, .2);
+}
+
+.estado_4{
+	background-color: rgba(50,160,0, .2);
+}
+
+/*
+#input_estado_44_act36{
+	background-color: rgba(240,200,0, .4);
+}
+
+#input_estado_44_act37 [value='2']
+{
+	background-color: rgba(50,160,0, .4);
+}*/

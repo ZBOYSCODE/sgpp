@@ -27,6 +27,10 @@ $(document).ready(function(){
 		carga_registros();
 	});
 
+	$(document).on('change', '.inputEstado select', function(){
+		cambio_color(this);
+	});
+
 	$(document).on('click', '.add-block', function(){
 
 		quitar_alerta();
@@ -155,14 +159,15 @@ $(document).ready(function(){
 		    				"<i class='fa fa-trash-o' title='Eliminar actividad'></i></a>"+
 		    			"</div> "+
 		    			"<div class='form-group col-md-8 col-md-offset-1 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' placeholder='Actividad' /></div> "+
-		    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad' id='input_estado_"+idbloque+""+num_act+"'><option value='0'>Seleccione</option></select></div>"+
+		    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad' id='input_estado_"+idbloque+""+num_act+"'></select></div>"+
 		    			
 		    	"	</div>"
 
 		}).appendTo('#tit-'+idbloque);
 
 		$("#input_proy_"+idbloque+""+num_act).renderSelect(slc_proy);
-		$("#input_estado_"+idbloque+""+num_act).renderSelect(slc_estado);
+		$("#input_estado_"+idbloque+""+num_act).renderSelect(slc_estado, 1);
+		$("#input_estado_"+idbloque+""+num_act).addClass('estado_1');
 
 		num_act++;
 	});
@@ -432,7 +437,7 @@ $(document).ready(function(){
 					// Añadimos una actividad al bloque correspondiente
 					jQuery('<div/>', {
 					    id: 'act-'+act.id,
-					    class: 'col-md-12 actividad',
+					    class: 'col-md-12 actividad color-estado'+act.estado_id,
 					    //'data-num': idbloque,
 					    html: 	"<label>"+nombre_proyecto+"</label>"+
 					    		"<div class='row'>"+
@@ -450,7 +455,7 @@ $(document).ready(function(){
 					    			"</div> "+
 
 					    			"<div class='form-group col-md-8 col-md-offset-1 inputAct'><input class='form-control input-actividad' id='input_act_"+idbloque+"' 		type='text'	value='"+act.descripcion+"' placeholder='Actividad' /></div> "+
-					    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad' id='input_estado_"+idbloque+"_act"+act.id+"'><option value='0'>Seleccione</option></select></div>"+
+					    			"<div class='form-group col-md-2 inputEstado'><select class='form-control input-actividad estado_"+act.estado_id+"' id='input_estado_"+idbloque+"_act"+act.id+"'></select></div>"+
 
 					    	"	</div>"
 
@@ -464,6 +469,15 @@ $(document).ready(function(){
 
 
 		});
+	}
+
+	function cambio_color(obj)
+	{
+		var id = $(obj).val();
+
+		$(obj).removeClass();
+
+		$(obj).addClass("form-control input-actividad estado_"+id);
 	}
 
 	function horamayor(hrs)
