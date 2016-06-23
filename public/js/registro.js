@@ -314,7 +314,6 @@ $(document).ready(function(){
 				// una vez eliminado, quitamos el div
 				$("#act-"+data.id).addClass('danger').fadeOut('slow',function(){
 	            	$(this).remove();
-	            	updateNumBloques();
 	            });
 			}else{
 				alerta(data.msg, 'alert-danger');
