@@ -430,12 +430,8 @@ body {
 	background-color: rgba(50,160,0, .2);
 }
 
-/*
-#input_estado_44_act36{
-	background-color: rgba(240,200,0, .4);
+.cab-list-act{
+	padding-top: 1em;
+	padding-bottom: 1em;
+	margin-bottom: 2em;
 }
-
-#input_estado_44_act37 [value='2']
-{
-	background-color: rgba(50,160,0, .4);
-}*/

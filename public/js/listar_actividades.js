@@ -12,14 +12,35 @@ $(document).ready(function(){
 		carga_registros();
 	});
 
+	$(document).on('click', '#btn_filtrar', function(e){
+
+		e.preventDefault();
+		carga_registros();
+
+	});
+
 	function carga_registros()
 	{
 		$("#data").html("");
 
 		if(fecha == ''){return false;}
 
+		proyecto 	= $("#proyectos").val();
+		estado 		= $("#estados").val();
+		usuario 	= $("#usuarios").val();
+
+		if( $('#sin_hr').prop('checked') ) {
+		    hhr = true;
+		}else{
+			hhr = false;
+		}
+
 		var datos = {
-			'fecha' 	: 	fecha
+			'fecha' 	: 	fecha,
+			'proyecto'	: 	proyecto,
+			'usuario' 	: 	usuario,
+			'hhr' 		: 	hhr,
+			'estado'	: 	estado
 		}
 
 		js = ajax(datos, 'cargarRegistros');
@@ -45,14 +66,14 @@ $(document).ready(function(){
 
 		jQuery('<div/>', {
 		    class: 'row',
-		    html: 	"<div class='col-xs-4'>Proyecto</div> "+
-	    			"<div class='col-xs-4'>Actividad</div> "+
-	    			"<div class='col-xs-2'>HH Estimadas</div> "+
-	    			"<div class='col-xs-2'>HH Reales</div> "
+		    html: 	"<div class='row bg-info cab-list-act'>"+
+		    		"<div class='col-xs-2'><strong>Proyecto</strong></div> "+
+	    			"<div class='col-xs-4'><strong>Actividad</strong></div> "+
+	    			"<div class='col-xs-2'><strong>HH Estimadas</strong></div> "+
+	    			"<div class='col-xs-2'><strong>HH Reales</strong></div> " +
+	    			"<div class='col-xs-2'><strong>Estado</strong></div> "+
+	    			"</div>"
 		}).appendTo('#data');
-
-
-		$("#data").append("<hr class='row'>");
 
 
 		$.each(data, function(id, b){
@@ -62,7 +83,7 @@ $(document).ready(function(){
 			jQuery('<div/>', {
 			    id: 'usr-'+id,
 			    class: 'row',
-			    html: "<label>"+b.nombre+"</label>"
+			    html: "<div class='row'><div class='form-group col-md-12'><strong>"+b.nombre+"</<strong></div></div>"
 			}).appendTo('#data');
 
 
@@ -72,18 +93,19 @@ $(document).ready(function(){
 					jQuery('<div/>', {
 					    id: 'act-'+act.id,
 					    class: 'row',
-					    html: 	"<div class='form-group col-xs-4'>"+act.proyecto+"</div> "+
+					    html: 	"<div class='form-group col-xs-2'>"+act.proyecto+"</div> "+
 				    			"<div class='form-group col-xs-4'>"+act.descripcion+"</div> "+
 				    			"<div class='form-group col-xs-2'>"+act.hh_estimadas+" Hrs.</div> "+
-				    			"<div class='form-group col-xs-2'>"+act.hh_reales+" Hrs.</div> "
+				    			"<div class='form-group col-xs-2'>"+act.hh_reales+" Hrs.</div> "+
+				    			"<div class='form-group col-xs-2'>"+act.estado+"</div> "
 
 					}).appendTo('#usr-'+id);
 				});
 			}
 
 			jQuery('<div/>', {
-			    class: 'row',
-			    html: 	"<div class='form-group col-xs-4 col-xs-offset-4'><strong>Total</strong></div>"+
+			    class: 'row bg-warning',
+			    html: 	"<div class='form-group col-xs-4 col-xs-offset-2'><strong>Total</strong></div>"+
 		    			"<div class='form-group col-xs-2 '><strong>"+IntToTime(b.cntHrsE)+" Hrs.</strong></div> "+
 		    			"<div class='form-group col-xs-2'><strong>"+IntToTime(b.cntHrsR)+" Hrs.</strong></div> "
 

@@ -2,14 +2,75 @@
 	<hr>
 
 
-	<div class="col-md-3 col-md-offset-4">
+	<div class="col-md-10 col-md-offset-1">
 
-		<form class='form-inline' action="<?php print $this->url->get('actividad')?>" id='frm'>
+		<form action="<?php print $this->url->get('actividad')?>" id='frm'>
+			
+			<div class="row">
+				<div class="form-group col-md-4">
+					<label for="proyectos">Proyectos</label>
+					<select name="proyectos" id="proyectos" class='form-control'>
+						<option value="0">Seleccione</option>
+						<?php
+							foreach ($pcData['proyectos'] as $proyecto) {
+								echo "<option value='".$proyecto->proy_id."'>".$proyecto->proy_nombre."</option>";
+							}
+						?>
+					</select>
+				</div>
 
-			<div class="form-group">
-				<label for="fecha">Fecha</label>
-				<input type="date" name='fecha' id='fecha' class='form-control input-lg' value="<?php echo $pcData['fecha']; ?>">
+				<div class="form-group col-md-4">
+					<label for="usuarios">Usuarios</label>
+					<select name="usuarios" id="usuarios" class='form-control'>
+						<option value="0">Seleccione</option>
+						<?php
+							foreach ($pcData['usuarios'] as $usuario) {
+								$nombre = $usuario->nombres." ".$usuario->apellido_paterno." ".$usuario->apellido_materno;
+								echo "<option value='".$usuario->rut."'>".$nombre."</option>";
+							}
+						?>
+					</select>
+				</div>
+
+				<div class="form-group col-md-4">
+					<label for="estados">Estados</label>
+					<select name="estados" id="estados" class='form-control'>
+						<option value="0">Seleccione</option>
+						<?php
+							foreach ($pcData['estados'] as $estado) {
+								echo "<option value='".$estado->id."'>".$estado->nombre."</option>";
+							}
+						?>
+					</select>
+				</div>
 			</div>
+				
+			<div class="row">
+				
+
+				<div class="form-group col-md-4">
+					<label for="fecha">Fecha</label>
+					<input type="date" name='fecha' id='fecha' class='form-control' value="<?php echo $pcData['fecha']; ?>">
+				</div>
+
+				<div class="form-group col-md-4">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" id='sin_hr'> Sin Horas reales
+						</label>
+					</div>
+				</div>
+			
+				
+				<div class="form-group col-md-4">
+					<label for="btn_filtrar">Filtrar</label>
+					<button id='btn_filtrar' class="btn btn-primary form-control">
+						<i class="fa fa-search"></i>
+					</button>
+				</div>
+					
+			</div>
+				
 		</form>
 		
 		

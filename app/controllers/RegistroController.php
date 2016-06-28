@@ -26,6 +26,8 @@
 	    	$addCss[]	= "css/style_registros.css";
 
 	    	$pcData['proyectos'] 	= Proyecto::find();
+
+	    	date_default_timezone_set('America/Santiago');
 	    	$pcData['fecha'] 		= date('Y-m-d');
 
 

@@ -5,6 +5,8 @@
 	use Gabs\Models\Proyecto;
 	use Gabs\Models\Bloque;
 	use Gabs\Models\Actividad;
+    use Gabs\Models\Estado;
+    use Gabs\Models\Personas;
 
     class ActividadController extends ControllerBase
     {
@@ -24,8 +26,12 @@
 	    	$addJs[] 	= "js/listar_actividades.js";
 	    	$addCss[]	= "css/style_registros.css";
 
-	    	$pcData['fecha'] 		= date('Y-m-d');
+            date_default_timezone_set('America/Santiago');
 
+	    	$pcData['fecha'] 		= date('Y-m-d');
+            $pcData['estados']      = Estado::find();
+            $pcData['usuarios']     = Personas::find();
+            $pcData['proyectos']    = Proyecto::find();
 
 	        echo $this->view->render('theme',array(	'topMenu'=>$menu,
 	        										'menuSel'=>'', 
@@ -45,23 +51,76 @@
 	    public function cargarRegistrosAction()
 	    {
 
-	    	$fecha 		=	$this->request->getPost("fecha");
+	    	$fecha      = $this->request->getPost("fecha");
+            $proyecto   = $this->request->getPost('proyecto', 'int');
+            $estado     = $this->request->getPost('estado', 'int'); 
+            $usuario    = $this->request->getPost('usuario', 'string');
+            $hhr        = $this->request->getPost('hhr');
 
-	    	// Query robots binding parameters with both string and integer placeholders
-			$conditions = "fecha = :fecha:";
+            $where = 'b.fecha = :fecha:';
+            $bind['fecha'] = $fecha;
 
-			// Parameters whose keys are the same as placeholders
-	    	$params = array(
-		    			"fecha" 	=> $fecha
-		    		);
+            if($proyecto > 0){
+                $where .= " AND a.proyecto_id = :proyecto: ";
+                $bind['proyecto'] = $proyecto;
+            }
 
-	    	$bloques = Bloque::find(array(
-	    			$conditions,
-	    			"bind" => $params
-	    	));
+            if($estado > 0){
+                $where .= " AND a.estado_id = :estado: ";
+                $bind['estado'] = $estado;
+            }
+
+            if($usuario > 0){
+                $where .= " AND p.rut = :usuario: ";
+                $bind['usuario'] = $usuario;
+            }
+
+            if($hhr == 'true'){
+                $where .= " AND a.hh_reales = 0 ";
+            }
+
+	    	
+            $act = $this->modelsManager->createBuilder()
+                        ->from(array("a" => 'Gabs\Models\Actividad'))
+                        ->join('Gabs\Models\Bloque', 'b.id = a.bloque_id' ,'b')
+                        ->join('Gabs\Models\Users', 'b.usuario_id = u.id' ,'u')
+                        ->join('Gabs\Models\Personas', 'p.rut = u.rut' ,'p')
+                        ->where($where, $bind)
+                        ->getQuery()
+                        ->execute();
 
 
-	    	$i =0 ;
+            foreach ($act as $actividad) {
+                
+                $user = $actividad->bloque->usuario;
+
+                $data['user'][$user->id]['nombre'] = $user->name;
+
+
+                $arr['id']              = $actividad->id;
+                $arr['proyecto']        = $actividad->proyecto->proy_nombre;
+                $arr['hh_estimadas']    = $this->IntToTime($actividad->hh_estimadas);
+                $arr['hh_reales']       = $this->IntToTime($actividad->hh_reales);
+                $arr['descripcion']     = $actividad->descripcion;
+                $arr['estado']          = $actividad->estado->nombre;
+
+
+                $data['user'][$user->id]['actividades'][] = $arr;
+
+                if(!isset($data['user'][$user->id]['cntHrsR'])){
+                    $data['user'][$user->id]['cntHrsR'] = 0;
+                }
+
+                if(!isset($data['user'][$user->id]['cntHrsE'])){
+                    $data['user'][$user->id]['cntHrsE'] = 0;
+                }
+
+                $data['user'][$user->id]['cntHrsR'] += $actividad->hh_reales;
+                $data['user'][$user->id]['cntHrsE'] += $actividad->hh_estimadas;
+            }
+
+            
+	    	/*$i =0 ;
 
 	    	foreach ($bloques as $bloque)
 	    	{
@@ -76,11 +135,12 @@
 
                 foreach ($bloque->actividad as $actividad) {
 
-                	$arr['id'] 			= $actividad->id;
+                	$arr['id'] 			    = $actividad->id;
                 	$arr['proyecto'] 		= $actividad->proyecto->proy_nombre;
                 	$arr['hh_estimadas'] 	= $this->IntToTime($actividad->hh_estimadas);
-                	$arr['hh_reales'] 	= $this->IntToTime($actividad->hh_reales);
+                	$arr['hh_reales'] 	    = $this->IntToTime($actividad->hh_reales);
                 	$arr['descripcion'] 	= $actividad->descripcion;
+                    $arr['estado']          = $actividad->estado->nombre;
 
                 	$data['user'][$bloque->usuario_id]['actividades'][] = $arr;
 
@@ -105,9 +165,10 @@
                 //$this->IntToTime
 
                 $i++;
-            }
+            }*/
 
-            if($i>0){
+            $i = count( $data['user'] );
+            if( $i > 0){
             	$data['nbloques'] = $i;
 				$data['estado'] = true;
 				$data['msg']	= "se cargaron ".$i." usuarios.";
