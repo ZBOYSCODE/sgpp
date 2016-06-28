@@ -8,6 +8,9 @@ use Phalcon\Mvc\Model\Query;
 class PersonaProyecto extends Model
 {
 
+	public $prsn_proy_id;
+
+
     public function initialize()
     {
     }

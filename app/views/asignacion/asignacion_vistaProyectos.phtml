@@ -14,6 +14,10 @@
 	.col-personas{
 		padding: 8px 12px 8px 12px !important;
 	}
+
+	.del_pp:hover{
+		cursor: pointer;
+	}
 </style>
 
 <div class="widget">
@@ -45,6 +49,9 @@
 
 		</div>
 	</form>
+
+	<div id="msg"></div>
+	
 	<div id="tablaData">
 		<?php print($this->view->render('asignacion/asignacion_tablaAsignacionProyectos',array('pcData'=>$pcData))) ?>
 	</div>

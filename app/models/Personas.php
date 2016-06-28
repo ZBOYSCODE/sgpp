@@ -52,16 +52,19 @@ class Personas extends Model
 
     public function getPersonasByProyecto($data)
     {
-        $query = new Query("SELECT p.rut, nombres, apellido_paterno, activo 
+        $query = new Query("SELECT p.rut, nombres, apellido_paterno, activo, pp.prsn_proy_id
                             FROM Gabs\Models\Personas p 
                             LEFT JOIN Gabs\Models\PersonaProyecto pp ON pp.rut = p.rut
                             WHERE pp.proy_id = {$data['proy_id']}",$this->getDI());
+
+
         $query = $query->execute();     
         if(count($query)>0) 
             return $query->toArray();
         else
             return array();
     }
+
 
     public function getPersonasSinProyecto($data)
     {
@@ -89,4 +92,7 @@ class Personas extends Model
 
 
     }
+
+    
+    
 }

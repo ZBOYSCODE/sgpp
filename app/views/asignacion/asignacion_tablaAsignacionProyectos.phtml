@@ -8,6 +8,8 @@
 </div>			
 
 
+<form action="<?php echo $this->url->get('asignacion') ?>" id='frm'></form>
+
 <?php if (!empty($pcData['personas'])): ?>		
 		<table id="tablaVistaProyectos" class="table table-vcenter table-striped">
 			<thead>
@@ -20,8 +22,23 @@
 			</thead>
 			<tbody>
 				<?php foreach ($pcData['personas'] as $persona): ?>
-					<tr class="text-center">
-						<td class="col-personas"><?php print($persona['nombres'])?><br><?php print($persona['apellido_paterno']) ?></td>
+					<tr class="text-center" id = 'tr_<?php echo $persona['prsn_proy_id']?>' >
+						
+						<td class="col-personas">
+							<?php 
+							
+								echo $persona['nombres'];
+
+								if($persona['delete']){
+									echo " <span class='del_pp' data-id = '".$persona['prsn_proy_id']."'><i class='fa fa-times'></i></span>";
+								}
+
+								echo "<br>";
+								echo $persona['apellido_paterno'];
+							
+							?>		
+						</td>
+						
 						<?php foreach ($pcData['weeks'] as $mondayWeek): ?>
 							<?php if (isset($pcData['data'][$mondayWeek][$persona['rut']])): ?>
 								<?php $dataCompleta = $pcData['data'][$mondayWeek][$persona['rut']] ?>

@@ -38,12 +38,20 @@ class AsignacionController extends ControllerBase
     	$pcData['proyectos'] = Proyecto::find('proy_activo = 1')->toArray();
     	$pcData['proyectoSelected'] = reset($pcData['proyectos']);
 
-    	$modelPP = new PersonaSemana();
-    	$modelP = new Personas();
+    	$modelPP   = new PersonaSemana();
+    	$modelP    = new Personas();
+
     	$pcData['personas'] = $modelP->getPersonasByProyecto($pcData['proyectoSelected']);
     	$pcData['data'] = $modelPP->getData($pcData['proyectoSelected']);
     	$pcData['weeks'] = $this->getWeeks(5);
-        
+
+
+
+        foreach ($pcData['personas'] as $k => $p) {
+
+            $pcData['personas'][$k]['delete'] = $this->sePuedeEliminar($p['rut'], $pcData['proyectoSelected']['proy_id']);
+
+        }
 
         $addJs[] = 'js/asignacionpersonas.js';
         
@@ -57,6 +65,26 @@ class AsignacionController extends ControllerBase
                                                 'addJs' => $addJs));
 
     }
+
+    private function sePuedeEliminar($rut, $proyecto_id){
+
+        $hh = $this->modelsManager->createBuilder()
+            ->from(array("ps" => 'Gabs\Models\PersonaSemana'))
+            ->join('Gabs\Models\ProyectoPersonaSemana', 'ps.prsn_smna_id = pps.prsn_smna_id' ,'pps')
+            ->where('rut = :rut:', array('rut'=> $rut))
+            ->andWhere("pps.proy_id = :proyecto:", array('proyecto' => $proyecto_id))
+            ->getQuery()
+            ->execute()->toArray();
+
+        if(count($hh) > 0){
+            return 0;
+        }else{
+            return 1;
+        }
+
+    }
+
+
 
     public function changeProyectoAction(){
     	$pcData['proyectoSelected'] = Proyecto::findFirst("proy_id = ".$_POST['proyectoSelected'])->toArray();
@@ -315,6 +343,14 @@ class AsignacionController extends ControllerBase
     	$modelPP = new PersonaSemana();
     	$modelP = new Personas();
     	$pcData['personas'] = $modelP->getPersonasByProyecto($pcData['proyectoSelected']);
+
+
+        foreach ($pcData['personas'] as $k => $p) {
+            $pcData['personas'][$k]['delete'] = $this->sePuedeEliminar($p['rut'], $pcData['proyectoSelected']['proy_id']);
+        }
+
+
+
     	$pcData['data'] = $modelPP->getData($pcData['proyectoSelected']);
     	$pcData['weeks'] = $this->getWeeks(5);    	
 
@@ -436,4 +472,34 @@ class AsignacionController extends ControllerBase
     	";
     }
   */
+
+    public function deletePersonaProyectoAction()
+        {
+            $id = $this->request->getPost("prsn_proy_id", "int");
+
+            $personaProyecto = PersonaProyecto::findByPrsnProyId($id);
+
+            if ($personaProyecto != false)
+            {
+                if ($personaProyecto->delete() == false)
+                {
+                    $data['estado'] = false;
+                    $data['msg']    = "¡Lo sentimos, no hemos podido eliminar la actividad!";
+
+                    foreach ($personaProyecto->getMessages() as $message) {
+                        $data['detalleError'][] = $message->getMessage();
+                    }
+
+                } else {
+                    $data['estado'] = true;
+                    $data['msg']    = "Usuario eliminado!";
+                    $data['id']     = $id;
+                }
+            }else{
+                $data['estado'] = false;
+                $data['msg']    = "¡Lo sentimos, la actividad no existe!";
+            }
+
+            echo json_encode($data, JSON_PRETTY_PRINT);
+        }
 }

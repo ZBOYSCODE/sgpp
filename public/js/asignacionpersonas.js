@@ -1,6 +1,8 @@
 $(document).ready(function(){
 
 	var users = [];
+	
+	var url = $("#frm").attr('action');
 
 	$(document).on('change', '#personaSelected', function(){
 
@@ -47,5 +49,55 @@ $(document).ready(function(){
 		$('#personaSelected').trigger("chosen:updated");
 
 	});
+
+	$(document).on('click', '.del_pp', function(){
+
+		if(confirm("¿seguro quiere eliminar este usuario del proyecto?")){
+			del_persona_proyecto($(this).attr('data-id'));// ID persona_proyecto !
+		}
+		
+	});
+
+
+	function del_persona_proyecto(id)
+	{
+		var datos = {
+			'prsn_proy_id' 	: id
+		}
+	
+		bloque = ajax(datos, 'deletePersonaProyecto');
+
+		bloque.success(function (data)
+		{
+			if(data.estado)
+			{
+				// una vez eliminado, quitamos el div
+				$("#tr_"+data.id).addClass('danger').fadeOut('slow',function(){
+	            	$(this).remove();
+	            });
+
+	            $("#msg").alerta(data.msg, 'alert-success');
+
+			}else{
+				$("#msg").alerta(data.msg, 'alert-danger');
+			}
+		});
+	}
+
+	function ajax(datos, metodo, async = true)
+	{
+		return $.ajax({
+            async	: async,
+            type 	: 'POST',
+            data 	: datos,
+            url 	: url+'/'+metodo,
+            dataType: 'json',
+            success : function(data)
+            {
+                $.log(data.msg);
+                return data; 
+            }
+        });
+	}
 
 });

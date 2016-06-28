@@ -20,9 +20,33 @@
 				// añadimos la opcion al select
 				option.appendTo(th)
 			});
-		}
+		},
 
+		alerta: function (msg, tipo_alerta){
+
+			$(this).children().addClass('danger').hide('fast', function(){
+				$(this).remove();
+			});
+
+			$('<div/>', {
+			    class 	: 'alert '+tipo_alerta,
+			    role 	: 'alert',
+			    html 	: '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+			    			"<strong>Atención :</strong> "+msg
+			}).appendTo(this);
+		},
+
+		quitar_alerta: function()
+		{
+			$(this).children().addClass('danger').hide('fast', function(){
+				$(this).remove();
+			});
+		}
 	});
+
+
+
+	
 
 	jQuery.log = function(msg){
 		console.log(msg);
