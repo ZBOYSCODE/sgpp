@@ -89,7 +89,6 @@
                         ->getQuery()
                         ->execute();
 
-
             foreach ($act as $actividad) {
                 
                 $user = $actividad->bloque->usuario;
@@ -167,11 +166,14 @@
                 $i++;
             }*/
 
-            $i = count( $data['user'] );
-            if( $i > 0){
+            if(isset($data))
+            {
+                $i = count( $data['user'] );
+
             	$data['nbloques'] = $i;
 				$data['estado'] = true;
 				$data['msg']	= "se cargaron ".$i." usuarios.";
+                
             }else{
             	$data['estado'] = false;
             	$data['msg']	= "no se encontraron resultados";
