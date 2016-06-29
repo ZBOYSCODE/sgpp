@@ -55,7 +55,7 @@ class Auth extends Component
 		
         $this->session->set('auth-identity', array(
             'id' => $user->id,
-            'name' => $user->name,
+            'name' => utf8_encode($user->name),
             'rut' => $user->rut,
             'passChange' => $user->mustChangePassword,
 			'correo' =>$credentials['email'],
@@ -186,7 +186,7 @@ class Auth extends Component
                         // Register identity
                         $this->session->set('auth-identity', array(
                             'id' => $user->id,
-                            'name' => $user->name,
+                            'name' => utf8_encode($user->name),
                             'profile' => $user->profile->name,
 							'correo' => $user->profile->correo
                         ));
@@ -281,7 +281,7 @@ class Auth extends Component
 
         $this->session->set('auth-identity', array(
             'id' => $user->id,
-            'name' => $user->name,
+            'name' => utf8_encode($user->name),
             'profile' => $user->profile->name,
 			'correo' => $user->profile->correo,
         ));
