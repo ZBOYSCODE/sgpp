@@ -29,9 +29,11 @@
 							
 								echo $persona['nombres'];
 
-								if($persona['delete']){
-									echo " <span class='del_pp' data-id = '".$persona['prsn_proy_id']."'><i class='fa fa-times'></i></span>";
-								}
+								if(isset($persona['delete'])){
+									if($persona['delete']){
+										echo " <span class='del_pp' data-id = '".$persona['prsn_proy_id']."'><i class='fa fa-times'></i></span>";
+									}
+								}									
 
 								echo "<br>";
 								echo $persona['apellido_paterno'];
