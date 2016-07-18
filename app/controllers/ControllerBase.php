@@ -3,6 +3,7 @@ namespace Gabs\Controllers;
 
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Dispatcher;
+use Gabs\AccesoAcl\AccesoAcl;
 
 class ControllerBase extends Controller
 {
@@ -19,9 +20,15 @@ class ControllerBase extends Controller
 				$response = new \Phalcon\Http\Response();
 				$response->redirect("login");
 				$response->send();
-			}			
-		
+			}
 		}	
+		
+		if(isset($this->auth->getIdentity()['roleId']) && !AccesoAcl::tieneAcceso())
+    	{
+    		$response = new \Phalcon\Http\Response();
+			$response->redirect("acceso/denegado");
+			$response->send();
+    	}
 	
     }
 }

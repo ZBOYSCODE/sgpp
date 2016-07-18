@@ -59,6 +59,7 @@ class Auth extends Component
             'rut' => $user->rut,
             'passChange' => $user->mustChangePassword,
 			'correo' =>$credentials['email'],
+            'roleId' => $user->rol_id
         ));
 
     }

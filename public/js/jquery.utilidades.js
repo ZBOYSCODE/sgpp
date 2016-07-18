@@ -44,9 +44,24 @@
 		}
 	});
 
+	jQuery.xajax = function (datos, url, async)
+	{
+		//valor por omisión
+		async = async || 'true';
+		return $.ajax({
+            async	: async,
+            type 	: 'POST',
+            data 	: datos,
+            url 	: url,
+            dataType: 'json',
+            success : function(data)
+            {
+                $.log(data.msg);
+                return data;
+            }
+        });
 
-
-	
+	}
 
 	jQuery.log = function(msg){
 		console.log(msg);
