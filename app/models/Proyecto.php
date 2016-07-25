@@ -15,17 +15,15 @@ class Proyecto extends Model
     public $hh_actuales;
     public $proy_activo;
 
+    public $equipo_id;
+    public $jefeproyecto_id;
+    public $coordinador_id;
+
     public function initialize()
     {
-        $this->hasManyToMany(
-            "proy_id",
-            "Gabs\Models\ProyectoPersonaSemana",
-            "proy_id",
-            "prsn_smna_id",
-            "Gabs\Models\PersonaSemana",
-            "prsn_smna_id",
-            array('alias' => 'personasemanas')
-        );
+
+        $this->hasOne("jefeproyecto_id", __NAMESPACE__ . "\Users", "id", array('alias' => 'jefeproyecto'));
+        $this->belongsTo("coordinador_id", __NAMESPACE__ . "\Users", "id", array('alias' => 'coordinador'));
 
     }
 
