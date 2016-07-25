@@ -91,8 +91,14 @@ class Users extends Model
             $this->mustChangePassword = 'N';
         }
 
-        // The account must be confirmed via e-mail
-        $this->active = 'N';
+        if(isset($this->createByAdmin) && $this->createByAdmin == 'Y') {
+
+            $this->active = 'Y';
+        } else {
+            // The account must be confirmed via e-mail
+            $this->active = 'N';
+        }
+
 
         // The account is not suspended by default
         $this->suspended = 'N';
@@ -106,7 +112,7 @@ class Users extends Model
      */
     public function afterSave()
     {
-        if ($this->active == 'N') {
+        /*if ($this->active == 'N') {
 
             $emailConfirmation = new EmailConfirmations();
 
@@ -117,7 +123,7 @@ class Users extends Model
                     ->getFlash()
                     ->notice('A confirmation mail has been sent to ' . $this->email);
             }
-        }
+        }*/
     }
 
     /**
@@ -125,22 +131,23 @@ class Users extends Model
      */
     public function validation()
     {
-        $this->validate(new Uniqueness(array(
+        /*$this->validate(new Uniqueness(array(
             "field" => "email",
             "message" => "The email is already registered"
         )));
 
-        return $this->validationHasFailed() != true;
+        return $this->validationHasFailed() != true;*/
     }
 
     public function initialize()
     {
-		/*
-        $this->belongsTo('profilesId', __NAMESPACE__ . '\Profiles', 'id', array(
-            'alias' => 'profile',
+		$this->belongsTo('rol_id', __NAMESPACE__ . '\Roles', 'id', array(
+            'alias' => 'rol',
             'reusable' => true
         ));
-		*/
+
+
+
 
         $this->hasMany('id', __NAMESPACE__ . '\SuccessLogins', 'usersId', array(
             'alias' => 'successLogins',

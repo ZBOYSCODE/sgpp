@@ -63,3 +63,39 @@ INSERT INTO `sgpp`.`roles` (`nombre`) VALUES ('Jefe Proyecto');
 INSERT INTO `sgpp`.`roles` (`nombre`) VALUES ('Desarrollador');
 
 
+ALTER TABLE `sgpp`.`users` 
+ADD COLUMN `delete` TINYINT(1) NULL DEFAULT 0 COMMENT '' AFTER `rut`;
+
+CREATE TABLE `sgpp`.`equipos` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `nombre` VARCHAR(150) NOT NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '');
+
+
+
+ALTER TABLE `sgpp`.`proyecto` 
+ADD COLUMN `jefeproyecto_id` INT NULL COMMENT '' AFTER `proy_activo`,
+ADD COLUMN `coordinador_id` INT NULL COMMENT '' AFTER `jefeproyecto_id`,
+ADD COLUMN `equipo_id` INT NULL COMMENT '' AFTER `blsa_id`,
+ADD INDEX `fk_proyecto_equipo_idx` (`equipo_id` ASC)  COMMENT '';
+ALTER TABLE `sgpp`.`proyecto` 
+ADD CONSTRAINT `fk_proyecto_equipo`
+  FOREIGN KEY (`equipo_id`)
+  REFERENCES `sgpp`.`equipos` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `sgpp`.`proyecto` 
+ADD INDEX `fk_proyecto_jefep_idx` (`jefeproyecto_id` ASC)  COMMENT '',
+ADD INDEX `fk_proyecto_coordinador_idx` (`coordinador_id` ASC)  COMMENT '';
+ALTER TABLE `sgpp`.`proyecto` 
+ADD CONSTRAINT `fk_proyecto_jefep`
+  FOREIGN KEY (`jefeproyecto_id`)
+  REFERENCES `sgpp`.`users` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_proyecto_coordinador`
+  FOREIGN KEY (`coordinador_id`)
+  REFERENCES `sgpp`.`users` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
