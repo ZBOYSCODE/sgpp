@@ -18,12 +18,12 @@ $(document).ready(function(){
 	
 
 	$(document).on('change', '#proyectos', function(){
-		quitar_alerta();
+		//quitar_alerta();
 		proyecto 	= 	$("#proyectos").val();
 	});
 
 	$(document).on('change', '#fecha', function(){
-		quitar_alerta();
+		//quitar_alerta();
 		carga_registros();
 	});
 
@@ -33,7 +33,7 @@ $(document).ready(function(){
 
 	$(document).on('click', '.add-block', function(){
 
-		quitar_alerta();
+		//quitar_alerta();
 
 		numb++;
 
@@ -42,7 +42,7 @@ $(document).ready(function(){
 
 		if(!idbloque)
 		{
-			alerta("¡Lo sentimos, ha ocurrido un error al crear el bloque!", 'alert-danger');
+			alerta("¡Lo sentimos, ha ocurrido un error al crear el bloque!", 'danger');
 			$.log("¡Error al crear bloque!");
 			return false;
 		}
@@ -74,13 +74,13 @@ $(document).ready(function(){
 	});
 
 	$(document).on('click', '.delete-bloque', function(){
-		quitar_alerta();
+		//quitar_alerta();
 		var bloque = $(this).attr('data-bloque');
 		eliminar_bloque(bloque);
 	});
 
 	$(document).on('click', '.delete-act', function(){
-		quitar_alerta();
+		//quitar_alerta();
 		var actividad = $(this).attr('data-id');
 
 
@@ -110,7 +110,7 @@ $(document).ready(function(){
 		var totalHoras = sumar_horas_estimadas(bloque);
 
 		if(horamayor(totalHoras)){
-			alerta("¡El total de horas es mayor al configurado por bloque!", 'alert-warning');
+			alerta("¡El total de horas es mayor al configurado por bloque!", 'warning');
 		}
 		
 		$span.text(totalHoras);
@@ -134,7 +134,7 @@ $(document).ready(function(){
 
 	$(document).on('click', '.add-actividad', function(){
 		
-		quitar_alerta();
+		//quitar_alerta();
 		
 	
 		idbloque = $(this).attr('data-bloque');
@@ -175,7 +175,7 @@ $(document).ready(function(){
 
 	$(document).on('click', '.guardar-act', function(){
 
-		quitar_alerta();
+		//quitar_alerta();
 
 		var $btn = $(this);
 
@@ -189,7 +189,7 @@ $(document).ready(function(){
 			idActividad = 0;
 			
 			if(idproyecto 	== 0){
-				alerta("¡Favor seleccionar un proyecto!", 'alert-warning');
+				alerta("¡Favor seleccionar un proyecto!", 'warning');
 				return false;
 			}
 		
@@ -199,11 +199,9 @@ $(document).ready(function(){
 			if(typeof idActividad !== "undefined") {
 				idbloque = false;
 			}else{
-				alerta("¡Lo sentimos, ha ocurrido un error al obtener actividad!", 'alert-danger');
+				alerta("¡Lo sentimos, ha ocurrido un error al obtener actividad!", 'danger');
 				return false;
 			}
-
-			
 		}
 
 		var actividad 		= $(this).parent().parent().children(".inputAct").children().val();
@@ -211,13 +209,13 @@ $(document).ready(function(){
 		var horas_reales 	= $(this).parent().parent().children(".inputHR").children().val();
 		var estado 			= $(this).parent().parent().children(".inputEstado").children().val();
 
-		if(estado 		== 0) {alerta("¡Favor seleccione estado de la actividad!", 'alert-warning'); return false;}
-		if(actividad 	== ''){alerta("¡Favor ingresar la descripción de la actividad!", 'alert-warning'); return false;}
-		if(horas 		== ''){alerta("¡Favor ingresar las horas planificadas!", 'alert-warning'); return false;}			
+		if(estado 		== 0) {alerta("¡Favor seleccione estado de la actividad!", 'warning'); return false;}
+		if(actividad 	== ''){alerta("¡Favor ingresar la descripción de la actividad!", 'warning'); return false;}
+		if(horas 		== ''){alerta("¡Favor ingresar las horas planificadas!", 'warning'); return false;}			
 		
 
 		var fecha		= $("#fecha").val();
-		if(fecha 		== ''){alerta("¡Favor seleccionar una fecha!", 'alert-warning'); return false;}
+		if(fecha 		== ''){alerta("¡Favor seleccionar una fecha!", 'warning'); return false;}
 
 		var datos = {
 			'idbloque'		: idbloque,
@@ -246,9 +244,9 @@ $(document).ready(function(){
 
 				$btn.parent().parent().parent().children('label').text(data.nombre_proyecto);
 
-				alerta('¡Actividad guardada con exito!', 'alert-success');
+				alerta('¡Actividad guardada con exito!', 'success');
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 
@@ -273,7 +271,7 @@ $(document).ready(function(){
 			if(data.estado){
 				id = data.id;
 			}else{
-				alerta(data.msg);
+				alerta(data.msg, 'success');
 			}
 		});
 
@@ -295,7 +293,7 @@ $(document).ready(function(){
 	            	$(this).remove();
 	            });
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 	}
@@ -316,7 +314,7 @@ $(document).ready(function(){
 	            	$(this).remove();
 	            });
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 	}
@@ -333,7 +331,7 @@ $(document).ready(function(){
 				slc_estado = data.estados;
 
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 	}
@@ -350,7 +348,7 @@ $(document).ready(function(){
 				slc_proy = data.proyectos;
 
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 	}
@@ -384,7 +382,7 @@ $(document).ready(function(){
 				$("#bloques").html(html);
 
 			}else{
-				alerta(data.msg, 'alert-danger');
+				alerta(data.msg, 'danger');
 			}
 		});
 	
@@ -490,7 +488,7 @@ $(document).ready(function(){
 		{
 			if(!data.estado)
 			{
-				alerta(data.msg, 'alert-warning');
+				alerta(data.msg, 'warning');
 			}
 		});
 	}
@@ -562,14 +560,17 @@ $(document).ready(function(){
 
 	function alerta(msg, tipo_alerta){
 
-		quitar_alerta();
+		//quitar_alerta();
 
-		jQuery('<div/>', {
+		/*jQuery('<div/>', {
 		    class 	: 'alert '+tipo_alerta,
 		    role 	: 'alert',
 		    html 	: '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
 		    			"<strong>Atención :</strong> "+msg
-		}).appendTo('#message_error');
+		}).appendTo('#message_error');*/
+
+
+		$.bootstrapGrowl(msg,{type:tipo_alerta});
 
 	}
 

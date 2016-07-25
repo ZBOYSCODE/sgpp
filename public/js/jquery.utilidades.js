@@ -12,6 +12,8 @@
 				    text	: valor
 				});
 
+				$.log(option);
+
 				// indicamos si uno las opciones es seleccionada por defecto
 				if(slc != null && slc == indice){
 					option.attr('selected', true);

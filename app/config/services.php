@@ -18,6 +18,7 @@ use Phalcon\Mvc\Model\Manager as modelsManager;
 //use Vokuro\Acl\Acl;
 use Gabs\Mail\Mail;
 use Gabs\AccesoAcl\AccesoAcl;
+use Gabs\Valida\Valida;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -162,4 +163,8 @@ $di->set('iof', function ()  use ($config) {
 
 $di->set('AccesoAcl', function () {
     return new AccesoAcl();
+});
+
+$di->set('Valida', function () {
+    return new Valida();
 });

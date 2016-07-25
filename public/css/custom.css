@@ -435,3 +435,9 @@ body {
 	padding-bottom: 1em;
 	margin-bottom: 2em;
 }
+
+.deleted
+{
+	background-color: #f2dede !important;
+
+}
