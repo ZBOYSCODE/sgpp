@@ -29,5 +29,7 @@
 	            ]));
 
 	       	$this->belongsTo("usuario_id", __NAMESPACE__ . "\Users", "id", array('alias' => 'usuario'));
+
+	       	$this->hasOne("proyecto_id", __NAMESPACE__ . "\Proyecto", 'proy_id', array('alias'=>'proyecto'));
 	    }
 	}

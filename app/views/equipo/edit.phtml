@@ -1,0 +1,79 @@
+<?php
+	$equipo = $pcData['equipo'];		
+?>
+<div class="base-page lighter">
+
+	<div class="formulario-section">
+
+		<div class="row">
+			<div class="col-md-7 col-md-offset-1">
+			    <h1 class="blog">Editar equipo de trabajo</h1>
+			</div>
+
+			<div class="col-md-3">
+				<a  href="javascript:void(0)"  
+	            onclick="$('#equipo-form').submit();" 
+	            class="btn btn-success pull-right btn-save">Editar</a>
+			</div>
+		</div>
+
+
+		<form action="<?php print($this->url->get("equipo")) ?>" id='frm'></form>
+
+        <form id="equipo-form" action="<?php print($this->url->get("equipo/update")) ?>" method="post" data-type="ajax" class='form'>
+        	<br><br>
+
+        	<input type="hidden" name="equipo_id" value='<?php echo $equipo->id; ?>'>
+
+        	<div class="row">
+        		<div class="col-md-5 col-md-offset-1">
+        			<div class="form-group">
+		        		<label for="nombre">Nombre</label>
+		        		<input type="text" id='nombre' name='nombre' class="form-control" placeholder='Nombre proyecto' value='<?php echo $equipo->nombre;?>'>
+		        	</div>
+        		</div>
+
+        		<div class="col-md-4">
+        			<label for="usuarios">Usuarios</label>
+        			<select name="usuarios[]" id="usuarios" class='select-chosen' multiple data-placeholder='Seleccione...'>
+        				<?php
+
+        					foreach ($equipo->usuarios as $u) {
+        						$usr[] = $u->id;
+        					}
+
+        					print_r($usr);
+
+        					foreach ($pcData['usuarios'] as $user) {
+
+   								
+        						if(in_array($user->id, $usr)){
+	        						$selected = "selected";
+	        					}else{
+	        						$selected = '';
+	        					}
+
+        						echo "<option {$selected} value='{$user->id}'>{$user->name}</option>";
+        					}
+        				?>
+        			</select>
+        		</div>
+
+        	</div>
+        </form>
+
+
+        <br><br>
+
+        <div class="row">
+				<div class="col-md-2 col-md-offset-1">
+					<a  href="<?php print $this->url->get("equipo") ?>"  
+	            		class="btn btn-warning btn-back pull-left"><i class="fa fa-reply"></i> Volver</a>				
+				</div>
+		</div>
+
+ 	</div>
+</div>
+
+	
+ 		

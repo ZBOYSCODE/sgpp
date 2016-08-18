@@ -1,0 +1,149 @@
+<?php
+	extract($pcData);
+?>
+<style type="text/css">
+	
+	#lista_tareas table{
+		max-width: 3000px;
+		margin: 0 auto;
+	}
+
+	.tarea{
+		background-color: rgba(200,200,180,0.2);
+		border-radius: 3px;
+		margin: 5px auto;
+		padding: 0.5rem;
+		width: 98%;
+	}
+
+	.tarea:hover{
+		cursor: pointer;
+	}
+
+	.data-tarea{
+		height: 2rem;
+	}
+
+	.formulario-section h1, .filtros{
+		padding-left: 15px;
+	}
+
+	.btn-volver{
+		padding-left: 15px;
+	}
+
+</style>
+
+<div class="base-page lighter">
+
+	<div class="formulario-section">
+
+		<div class="row">
+			<div class="col-md-7">
+			    <h1>Lista de tareas</h1>
+			</div>
+		</div>
+	
+		<form action="<?php print($this->url->get("tarea")) ?>" id='frm'></form>
+		<div id="ejecutar" data-caso='list'></div>
+
+
+
+		<div class="row filtros">
+
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="proyecto">Proyecto</label>
+					<select name="proyecto" id="proyecto" class='form-control select-chosen'>
+						<option value="">Seleccione...</option>
+						<?php
+							foreach ($proyectos as $proyecto) {
+								echo "<option value='{$proyecto->proy_id}'>{$proyecto->proy_nombre}</option>";
+							}
+						?>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="equipo">Equipo de trabajo</label>
+					<select name="equipo" id="equipo" class='form-control select-chosen'>
+						<option value="">Seleccione...</option>
+						<?php
+							foreach ($equipos as $equipo) {
+								echo "<option value='{$equipo->id}'>{$equipo->nombre}</option>";
+							}
+						?>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-1">
+				<div class="form-group">
+					<label for="equipo">Crear tarea</label>
+					<button class='btn btn-success form-control'>Crear</button>
+				</div>
+				
+			</div>
+
+		</div>
+
+
+		
+		<div class="table-responsive col-md-12" id='lista_tareas'>
+			<table class='table table-bordered'>
+				<thead id='head_estados'>
+					<?php
+						foreach ($estados as $estado) {
+							echo "<th>{$estado->nombre}</th>";
+						}
+					?>
+				</thead>
+				<tbody id='body_estados'>
+					<tr>
+						<?php
+							foreach ($estados as $estado) {
+								echo "<td id='td_estado_{$estado->id}'></td>";
+							}
+						?>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+
+        
+
+        <br><br>
+
+        <div class="row btn-volver">
+				<div class="col-md-2">
+					<a  href="<?php print $this->url->get("tarea") ?>"  
+	            		class="btn btn-warning btn-back pull-left"><i class="fa fa-reply"></i> Volver</a>				
+				</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="data-tarea">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title"><span id='nombre_tarea'></span><br><small><strong id='nombre_proyecto'></strong></small></h4>
+			</div>
+
+			<div class="modal-body">
+				<p id='desc_tarea'></p>
+				<label id='fecha_tarea'></label>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			</div>
+
+		</div>
+	</div>
+</div>

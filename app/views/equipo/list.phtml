@@ -1,0 +1,143 @@
+<div class="base-page lighter">
+
+	<div class="formulario-section">
+		
+		<div class="row">
+			<div class="col-md-7 col-md-offset-1">
+				<aside>
+			        <h1 class="blog">Listado de equipos de trabajo</h1>
+			    </aside>
+			</div>
+		</div>
+			    
+
+		
+		<form action="<?php echo $this->url->get('equipo'); ?>" method='GET' id='frm'>
+			<div class="row">
+
+				<div class="col-md-7 col-md-offset-1">
+
+					<div class="form-group">
+						<label for="nombre">Nombre equipo</label>
+						<input type="text" name='nombre' class="form-control" placeholder='Nombre equipo' value="<?php echo (isset($_GET['nombre']))?$_GET['nombre']:'' ?>">
+					</div>
+
+				</div>
+
+				<div class="col-md-1">
+					<div class="form-group">
+						<label for="">&nbsp;</label>
+						<button type='submit' class='btn btn-default form-control'>Buscar</button>
+					</div>
+				</div>
+
+				<div class="col-md-1">
+					<div class="form-group">
+						<label for="">&nbsp;</label>
+						<a href="<?php echo $this->url->get('equipo/create/') ?>" class='btn btn-success form-control'>Crear</a>
+					</div>
+				</div>
+			</div>
+
+			<br><br>
+				
+			
+			<div class="col-md-10 col-md-offset-1">
+				
+				<hr>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						
+						<thead>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>Usuarios</th>
+							<th>Acción</th>
+						</thead>
+
+						<tbody>
+							<?php
+								foreach ($pcData['page']->items as $equipo) {
+
+									echo "<tr id='tr_{$equipo->id}'>";
+									echo "<td>{$equipo->id}</td>";
+									echo "<td>{$equipo->nombre}</td>";
+									echo "<td><a href='' class='lista_usuarios' data-id='{$equipo->id}'  data-toggle='modal' data-target='#userlist'>Usuarios</a></td>";
+									echo "<td>";
+
+									
+									if($this->AccesoAcl->tienePermiso('edit', 'equipo'))
+									{
+										echo "	<a class='btn btn-warning' href='".$this->url->get('equipo/edit/').$equipo->id ."'>
+													<i class='fa fa-pencil-square-o'></i>
+												</a>";
+					                }
+
+									if($this->AccesoAcl->tienePermiso('delete', 'equipo'))
+									{		
+										echo "	<button class='btn btn-warning delete' data-id='".$equipo->id."'>
+													<i class='fa fa-times'></i>
+												</button>";
+									}
+									
+									echo "</td>";
+								}
+							?>
+						</tbody>
+					</table>
+				</div>
+
+
+				
+
+					<?php
+
+						if(isset($pcData['page'])){
+							$url = '';
+
+							if(isset($_GET['nombre'])){
+								$url .= "&nombre=".$_GET['nombre'];
+							}else{
+								$url .= "nombre=";
+							}
+
+
+							# solo mostramos la paginación si el numero de paginas es mayor a 1
+							if( $pcData['page']->total_pages > 1)
+							{
+								echo "<a href='".$this->url->get("equipo/")."'>Primera</a> ";
+								echo "<a href='".$this->url->get("equipo/").$url."&page=".$pcData['page']->before."'>Anterior</a> ";
+								echo "<a href='".$this->url->get("equipo/").$url."&page=".$pcData['page']->next."'>Siguiente</a> ";
+								echo "<a href='".$this->url->get("equipo/").$url."&page=".$pcData['page']->last."'>Ultima</a> ";
+								echo "<BR>Estas en la página ", $pcData['page']->current, " de ", $pcData['page']->total_pages; 
+
+							}
+						}
+					?>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="userlist">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Lista usuarios <small><strong id='nombre_equipo'></strong></small></h4>
+			</div>
+
+			<div class="modal-body" id='listado-usuarios'>
+				
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary">Guardar</button>
+			</div>
+
+		</div>
+	</div>
+</div>

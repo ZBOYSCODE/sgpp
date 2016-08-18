@@ -2,15 +2,14 @@
 
 	namespace Gabs\Controllers;
 
-	use Gabs\Models\Proyecto;
-	use Gabs\Models\Equipo;
 	use Gabs\Models\Users;
-	use Gabs\Models\Roles;
+	use Gabs\Models\Equipo;
+	use Gabs\Models\EquipoUser;
 
 	use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 	use Gabs\Valida\Valida;
 
-	class ProyectoController extends ControllerBase{
+	class EquipoController extends ControllerBase{
 
 
 	    public function initialize()
@@ -21,8 +20,6 @@
 
 			# Paginación
 	    	$nombre 		= $this->request->get("name", 'string');
-	    	$email 			= $this->request->get("email", 'string');
-			//$user 		= $this->request->get("user", 'int');
 			$currentPage	= $this->request->get("page", 'int');
 
 			if(empty($currentPage)){
@@ -30,29 +27,26 @@
 			}
 
 
-			//prueba
-			//$nombre = "Bicorp";
-
 			# Filtro
 			$buscar = array();
 			if(!empty($nombre)) $buscar['proy_nombre']	= trim($nombre);
-			if(!empty($email)) $buscar['email']	= trim($email);
+			//if(!empty($email)) $buscar['email']	= trim($email);
 
 
 
-			$model = new Proyecto();
+			$model = new Equipo();
 
 			$query = self::fromInput($this->di, $model, $buscar);
 
 			$sentencia = $query->getParams();
-			$sentencia['order'] = 'created_at desc';
+			$sentencia['order'] = 'id asc';
 		
-			$proyectos = Proyecto::find($sentencia);
+			$equipo = Equipo::find($sentencia);
 
 
 			$paginator   = new PaginatorModel(
 			    array(
-			        "data"  => $proyectos,
+			        "data"  => $equipo,
 			        "limit" => 10,
 			        "page"  => $currentPage
 			    )
@@ -61,13 +55,13 @@
 			$data['page'] = $paginator->getPaginate();
 
 
-	    	$content    = 'proyectos/list';
+	    	$content    = 'equipo/list';
             $jsScript   = '';
             $menu       = 'menu/topMenu';
             $sideBar    = 'menu/sideBar';
             $addCss[]   = "";
 
-            $addJs[]  	= "js/proyecto.js";
+            $addJs[]  	= "js/equipo.js";
 
             $pcData = $data;
 
@@ -87,38 +81,54 @@
 
 		public function createAction(){
 
-	    	# Form creación
-	    	$data['users'] = Users::findByRolId($this->rol_jefep);
-	    	$data['areas'] = Area::find();
-	    	$data['tecnologias'] = Tecnologia::find();
+	    	$content    = 'equipo/crear';
+            $jsScript   = '';
+            $menu       = 'menu/topMenu';
+            $sideBar    = 'menu/sideBar';
+            $addCss[]   = "";
+
+            $pcData['usuarios'] = Users::find("rol_id = 2");
 
 
-	    	$themeArray = $this->_themeArray;
-    		$themeArray['pcView'] = 'proyectos/crear';
-	        $themeArray['pcData'] = $data;
-
-        	echo $this->view->render('theme', $themeArray);
+            echo $this->view->render('theme',array('topMenu'=>$menu,
+                                                    'menuSel'=>'', 
+                                                    'sideBar'=>$sideBar, 
+                                                    'sideBarSel'=>'gestion', 
+                                                    'pcView'=>$content,
+                                                    'pcData'=>$pcData, 
+                                                    'jsScript' => $jsScript,
+                                                    'addJs' => $addJs,
+                                                    'addCss' => $addCss)
+                                    ); 
 	    }
 
 	    public function storeAction()
 	    {
 	    	if ($this->request->isPost())
 	    	{
-		    	$proyecto = new Proyecto();
 
-		    	$proyecto->nombre 			= $this->request->getPost("nombre", 'string');
-		    	$proyecto->codigo			= $this->request->getPost("codigo", 'string');
-		    	$proyecto->descripcion 		= $this->request->getPost("descripcion", 'string');
-		    	$proyecto->creador_id  		= $this->auth->getIdentity()['id'];
-		    	$proyecto->jefep_id 		= $this->request->getPost("jefep", 'int');
-		    	$proyecto->area_id 			= $this->request->getPost("area", 'int');
-		    	$proyecto->tecnologia_id 	= $this->request->getPost("tecnologia", 'int');
-		    	$proyecto->created_at 		= date('Y-m-d H:i:s');
-		    	$proyecto->updated_at 		= date('Y-m-d H:i:s');
+	    		# Valida
+		    	$valida = new Valida($_POST,[
+	                'nombre'      	=>  'required|string'
+	            ]);
+
+	            if($valida->failed()) {
+
+	                foreach ($valida->errors as $message) {
+	                	$this->mifaces->addPosRendEval("$.bootstrapGrowl('{$message}',{type:'danger'});");
+	                }
+
+	                $this->mifaces->run();
+	                return false;
+	            }
+
+
+		    	$equipo = new Equipo();
+		    	$equipo->nombre 			= $this->request->getPost("nombre", 'string');
 
 				$this->mifaces->newFaces();
 
-				if($proyecto->save() == false)
+				if($equipo->save() == false)
 				{
 					foreach ($proyecto->getMessages() as $message) {
 						$val = $message->getMessage();
@@ -126,10 +136,28 @@
 	                }
 
 	                $this->mifaces->run();
+
 				}else{
-					$val = "Proyecto creado correctamente";
+
+					$val = "Equipo creado correctamente";
 					$this->mifaces->addPosRendEval("$.bootstrapGrowl('{$val}');");
-					$this->mifaces->addPosRendEval("window.location.replace('/sgpp/proyecto');");
+					$this->mifaces->addPosRendEval("window.location.replace('/sgpp/equipo');");
+
+
+					$users = $this->request->getPost("usuarios");
+
+					if(is_array($users)){
+						foreach ($users as $usuario) {
+
+							$usr = new EquipoUser();
+							$usr->equipo_id = $equipo->id;
+							$usr->user_id = $usuario;
+							$usr->save();
+
+							unset($usr);
+						}
+					}
+
 		            $this->mifaces->run(); 
 				}
 			}
@@ -142,19 +170,16 @@
 		 	if($id>0)
 		 	{
 		 		# Form edit
-		    	$data['users'] = Users::find(" rol_id = 4 ");
-		    	$data['equipos'] = Equipo::find();
+		    	$data['equipo'] 	= Equipo::findFirst($id);
+		    	$data['usuarios'] 	= Users::find("rol_id = 2");
 
-		    	$data['proyecto'] = Proyecto::findFirst($id);
-
-
-		        $content    = 'proyectos/edit';
+		        $content    = 'equipo/edit';
 	            $jsScript   = '';
 	            $menu       = 'menu/topMenu';
 	            $sideBar    = 'menu/sideBar';
 	            $addCss[]   = "";
 
-	            $addJs[]  	= "js/proyecto.js";
+	            $addJs[]  	= "js/equipo.js";
 
 	            $pcData = $data;
 
@@ -169,7 +194,7 @@
 	                                                    'addJs' => $addJs,
 	                                                    'addCss' => $addCss)
 	                                    ); 
-
+				
 		 	
 		 	}else{
 				$response = new \Phalcon\Http\Response();
@@ -183,20 +208,16 @@
 	    {
 	    	if ($this->request->isPost())
 	    	{
-	    		$id 	= $this->request->getPost("proyecto_id", 'int');
+	    		$id 	= $this->request->getPost("equipo_id", 'int');
 
 	    		if($id > 0)
 	    		{
-	    			$proyecto = Proyecto::findFirst($id);
+	    			$equipo = Equipo::findFirst($id);
 
 	    			
 			    	# Valida
 			    	$valida = new Valida($_POST,[
-		                'nombre'      	=>  'required|string',
-		                'descripcion'  	=>  'required|string',
-		                'jefep'      	=>  'required|int',
-		                'equipo'      	=>  'required|int',
-		                'coordinador'	=>	'required|int'
+		                'nombre'      	=>  'required|string'
 		            ]);
 
 		            if($valida->failed()) {
@@ -210,19 +231,12 @@
 		            }
 
 
-		            $proyecto->name 			= $this->request->getPost("nombre", 'string');
-			    	$proyecto->descripcion 		= $this->request->getPost("descripcion", 'string');
-			    	$proyecto->jefeproyecto_id 	= $this->request->getPost("jefep", 'int');
-			    	$proyecto->equipo_id 		= $this->request->getPost("equipo", 'int');
-			    	$proyecto->coordinador_id 	= $this->request->getPost("coordinador", 'int');
-			    	$proyecto->updated_at 		= date('Y-m-d H:i:s');
-
-
+		            $equipo->nombre 			= $this->request->getPost("nombre", 'string');
 
 
 			    	$this->mifaces->newFaces();
 
-					if($proyecto->save() == false)
+					if($equipo->save() == false)
 					{
 						foreach ($proyecto->getMessages() as $message) {
 							$val = $message->getMessage();
@@ -231,9 +245,29 @@
 
 		                $this->mifaces->run();
 					}else{
-						$val = "Proyecto editado correctamente";
+						$val = "Equipo editado correctamente";
 						$this->mifaces->addPosRendEval("$.bootstrapGrowl('{$val}');");
 						//$this->mifaces->addPosRendEval("window.location.replace('/qalendar/proyecto');");
+
+						if($this->deleteUsuarios($id)) {
+
+							$users = $this->request->getPost("usuarios");
+
+							if(is_array($users)) {
+
+								foreach ($users as $usuario) {
+									$usr = new EquipoUser();
+									$usr->equipo_id = $equipo->id;
+									$usr->user_id = $usuario;
+									$usr->save();
+									unset($usr);
+								}
+							}
+						}
+
+							
+
+
 			            $this->mifaces->run(); 
 					}
 	    		}
@@ -246,33 +280,19 @@
 
 	    	try {
 
-	    		$id = $this->request->getPost("proyecto", 'int');
+	    		$id = $this->request->getPost("equipo", 'int');
 
-	    		$proyecto = Proyecto::findFirst($id);
+	    		$equipo = Equipo::findFirst($id);
 
-	    		// aquí irán las restricciones
-	    		// ejem: no se podrán cancelar a cierta hora de realizarse la actividad
-	    		// $se_puede = true/false
-	    		// si es false, guardar en la variable $data['msg'] la razón 
-	    		$se_puede = true;
-
-
-	    		if($se_puede)
-	    		{
-	    			$proyecto->proy_activo = 0;
-
-		    		if(!$proyecto->save()){
+				if($this->deleteUsuarios($id)){
+					if(!$equipo->delete()){
 		    			$data['estado'] = false;
-		    			$data['msg'] 	= "No se ha podido eliminar el proyecto.";
+		    			$data['msg'] 	= "No se ha podido eliminar el equipo.";
 		    		}else{
 		    			$data['estado'] = true;
-		    			$data['msg'] 	= "Proyecto eliminado correctamente.";
+		    			$data['msg'] 	= "Equipo eliminado correctamente.";
 		    		}
-
-	    		}else{
-	    			$data['msg'] 	= 'Se cancela la eliminación del proyecto por restricción';
-	    			$data['estado'] = false;
-	    		}
+				}
 	    		
 	    	} catch (Exception $e) {
 	    		$data['estado'] = false;
@@ -282,58 +302,29 @@
 	    	echo json_encode($data);
 	    }
 
-	    public function activarAction()
+	    public function deleteUsuarios($equipo)
 	    {
-	    	try {
+	    	$equipousuarios = EquipoUser::findByEquipoId($equipo);
 
-	    		$id = $this->request->getPost("proyecto", 'int');
-
-	    		$proyecto = Proyecto::findFirst($id);
-	    		$proyecto->proy_activo = 1;
-
-	    		if(!$proyecto->save()){
-	    			$data['estado'] = false;
-	    			$data['msg'] = "no se ha podido activar el evento.";
-	    		}else{
-	    			$data['estado'] = true;
-	    			$data['msg'] = "Proyecto activado correctamente.";
-	    		}
-
-	    	} catch (Exception $e) {
-	    		$data['estado'] = false;
-	    		$data['msg'] = "Error activando el evento.";
+	    	foreach ($equipousuarios as $equipouser) {
+	    		$equipouser->delete();
 	    	}
+
+	    	return true;
+	    }
+
+	    public function getUsuariosAction()
+	    {
+	    	$id 	= $this->request->getPost("id", 'int');
+
+	    	$equipo = Equipo::findFirst($id);
+
+	    	$data['estado'] = true;
+	    	$data['usuarios'] = $equipo->usuarios->toArray();
+
 
 	    	echo json_encode($data);
 	    }
 
-	    public function getCoordinadoresAction()
-	    {
-
-	    	try {
-	    		$id = $this->request->getPost("equipo", 'int');
-
-		    	$equipo = Equipo::findFirst($id);
-
-
-
-
-		    	$user = array(0=>'Seleccione...');
-
-		    	
-		    	foreach ($equipo->getUsuarios() as $usuario) {
-		    		$user[$usuario->id] =  $usuario->name;
-		    	}
-
-		    	$data['usuarios'] = $user;
-		    	$data['estado'] = true;
-	    	} catch (Exception $e) {
-	    		$data['estado'] = false;
-	    	}
-		    	
-
-	    	echo json_encode($data);
-
-	    	
-	    }
+	   
 	}

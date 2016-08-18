@@ -15,7 +15,8 @@
 								'string',
 								'max',
 								'min',
-								'email'
+								'email',
+								'date'
 								);
 	
 		public function __construct($post, $arg) {
@@ -187,6 +188,25 @@
 			}
 			
 			return true;
+		}
+
+		private function is_date($campo) {
+
+			if(isset($this->post[$campo]) && !empty($this->post[$campo])){
+
+				if(!$this->validateDate($this->post[$campo])){
+					$this->errors[] = "Debe ingresar una fecha valida.";
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private function validateDate($date, $format = 'Y-m-d') {
+
+		    $d = \DateTime::createFromFormat($format, $date);
+		    return $d && $d->format($format) == $date;
 		}
 
 		public function failed(){

@@ -1,0 +1,98 @@
+<div class="base-page lighter">
+
+	<div class="formulario-section">
+
+		<div class="row">
+			<div class="col-md-7 col-md-offset-1">
+			    <h1 class="blog">Crear tareas</h1>
+			</div>
+
+			<div class="col-md-3">
+				<a  href="javascript:void(0)"  
+	            onclick="$('#tarea-form').submit();" 
+	            class="btn btn-success pull-right btn-save">Editar</a>
+			</div>
+		</div>
+
+			
+
+        <form id="tarea-form" action="<?php print($this->url->get("tarea/update")) ?>" method="post" data-type="ajax" class='form'>
+        	<br><br>
+
+        	<div class="row">
+        		<div class="col-md-9 col-md-offset-1">
+        			<div class="form-group">
+		        		<label for="nombre">Nombre</label>
+		        		<input type="text" id='nombre' name='nombre' class="form-control" placeholder='Nombre proyecto'>
+		        	</div>
+        		</div>
+        	</div>
+
+        	<div class="row">
+        		<div class="col-md-5 col-md-offset-1">
+        			<div class="form-group">
+        				<label for="usuarios">Proyecto</label>
+	        			<select name="proyecto" id="proyecto" class='select-chosen' data-placeholder='Seleccione...'>
+	        				<option value=''>Seleccione</option>
+	        				<?php
+	        					foreach ($pcData['proyectos'] as $proyecto) {
+	        						echo "<option value='{$proyecto->proy_id}'>{$proyecto->proy_nombre}</option>";
+	        					}
+	        				?>
+	        			</select>
+        			</div>
+	        			
+        		</div>
+
+        		<div class="col-md-4">
+        			<div class="form-group">
+	        			<label for="prioridad">Prioridad</label>
+	        			<select name="prioridad" id="prioridad" class='form-control'>
+	        				<?php
+	        					foreach ($pcData['prioridades'] as $prioridad) {
+	        						echo "<option value='{$prioridad->id}'>{$prioridad->nombre}</option>";
+	        					}
+	        				?>
+	        			</select>
+	        		</div>
+        		</div>
+        	</div>
+
+        	<div class="row">
+	        	<div class="col-md-9 col-md-offset-1">
+	        		<div class="form-group">
+	        			<label for="descripcion">Descripción</label>
+	        			<textarea name="descripcion" id="descripcion" class='form-control' cols="30" rows="5"></textarea>
+	        		</div>
+	        	</div>
+        	</div>
+
+        	<div class="row">
+        		<div class="col-md-5 col-md-offset-1">
+        			<div class="form-group">
+		        		<label for="horas">Horas estimadas</label>
+		        		<input type="number" id='horas' name='horas' class="form-control" min='0' value='0' placeholder='Número de horas estimadas'>
+		        	</div>
+        		</div>
+
+        		<div class="col-md-4">
+        			<div class="form-group">
+	        			<label for="usuarios">Fecha termino</label>
+    	    			<input type='date' name="fecha" id="fecha" class='form-control'>
+    	    		</div>
+        		</div>
+        	</div>      	
+
+        </form>
+
+         <br><br>
+
+        <div class="row">
+				<div class="col-md-2 col-md-offset-1">
+					<a  href="<?php print $this->url->get("tarea") ?>"  
+	            		class="btn btn-warning btn-back pull-left"><i class="fa fa-reply"></i> Volver</a>				
+				</div>
+		</div>
+
+	</div>
+</div>

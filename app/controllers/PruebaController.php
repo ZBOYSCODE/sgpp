@@ -4,46 +4,31 @@
     use Gabs\Models\Bloque;
     use Gabs\Models\Actividad;
 
+    use Gabs\Valida\Valida;
+
     class PruebaController extends ControllerBase
     {
 
         public function indexAction()
         {
-        	echo $this->relaciones();
-        }
 
-        private function relaciones()//
-        {
-            
-            /*$bloques = Bloque::find(array(
-                "id = 8"
-            ));*/
+            $post['name']       = 'Seba';
+            $post['apellido']   = 'Silva';
+            $post['edad']       = (int)'2hola';
+            $post['mail']       = 'seba@hotmail.com';
 
-            $bloques = Bloque::findById(8);
+            $valida = new Valida($post,[
+                'name'      =>  'required|max:5',
+                'apellido'  =>  'required|string',
+                'edad'      =>  'required|int|min:2|max:10',
+                'mail'      =>  'email'
+            ]);
 
-            echo "<pre>";
-
-            foreach ($bloques as $bloque) {
-                echo $bloque->id."<br>";
-                echo $bloque->fecha."<br>";
-
-                foreach ($bloque->actividad as $actividad) {
-                     echo $actividad->descripcion."<br>";
-                }
+            if( $valida->failed() ){
+                print_r($valida->errors);
+                return false;
             }
-        }
 
-        private function getFloatByHrs($horas)// 10:30
-        {
-        	$horas = "03:05";
-        	$arr = explode(':', $horas);
-        	$h = $arr[0];
-        	$m = $arr[1];
-
-        	$num = $h*3600 + $m*60; 
-
-    		$num = ($num/60)/60;
-
-    		return floatval(round($num, 2));
+           
         }
     }

@@ -8,7 +8,8 @@
 	class EquipoUser extends Model
 	{
 	    public $id;
-	    public $nombre;
+	    public $user_id;
+	    public $equipo_id;
 
 	    public function initialize()
 	    {
